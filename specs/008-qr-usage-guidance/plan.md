@@ -41,4 +41,4 @@ specs/004-start-finish-qr-timing/qr-payloads.md
 
 先复现新格式不能识别，再修改解析规则。生成后用独立解码器核对五张PNG，验证10种新旧点位身份与换行、错误点位和额外内容；执行现有全部回归。先上传支持新格式的小程序，再替换现场标牌。旧二维码仍可在新版中使用。
 
-固定environmentId=cloudbase-d2gd1ocuha5342ad6、activityId=health-run-test-20261011、routeVersion=route-20261011-v1、routeId=route-20261011。云函数submitCompletion和ACTIVITY_CONFIG无需更改或重新部署。
+固定environmentId=cloud1-d1g886bht0f7cbf69、activityId=health-run-2026-event02、routeVersion=route-20261011-v1、routeId=route-20261011。云函数submitCompletion和ACTIVITY_CONFIG无需更改或重新部署。

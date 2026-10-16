@@ -24,7 +24,7 @@
 
 **Performance Goals**: 换肤不增加页面首屏资源和运行时网络请求；现有动画、地图和 Canvas 性能保持不变
 
-**Constraints**: 只改视觉呈现；不改变扫码校验、路线顺序、动作计时、照片保存、完赛生成和本地数据；兼容现有 320px 至主流手机宽度和安全区
+**Constraints**: 只改视觉呈现；不改变扫码校验、路线顺序、照片保存、完赛生成和本地数据；兼容现有 320px 至主流手机宽度和安全区
 
 **Scale/Scope**: 7 个页面、2 个自有组件、应用导航配置、地图颜色配置和完赛 Canvas 绘制
 
@@ -73,7 +73,7 @@ miniprogram/
 ├── pages/
 │   ├── route/route.wxss              # 路线首页及点位状态
 │   ├── checkin/checkin.wxss          # 扫码状态
-│   ├── action/action.wxss            # 动作状态与安全提示
+│   ├── checkin/checkin.wxss        # 扫码状态与错误提示
 │   ├── upload/upload.wxss            # 照片区域与保存状态
 │   ├── certificate/certificate.wxss # 页面凭证
 │   ├── certificate/certificate.js   # Canvas 凭证颜色

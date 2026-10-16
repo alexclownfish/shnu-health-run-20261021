@@ -57,7 +57,7 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .snapshot .checkin-page { min-height: 690px; }
 .snapshot .route-heading, .snapshot .weather-copy, .snapshot .weather-score, .snapshot .challenge, .snapshot .challenge-copy, .snapshot .challenge-time, .snapshot .route-card-head,
 .snapshot .map-hint, .snapshot .section-head, .snapshot .station-card, .snapshot .reader, .snapshot .reader-phone, .snapshot .reader-tag, .snapshot .status-line, .snapshot .checkin-actions,
-.snapshot .checkpoint-bar, .snapshot .checkpoint-bar > view, .snapshot .motion-card, .snapshot .timer-card, .snapshot .safety-card,
+
 .snapshot .camera-prompt, .snapshot .photo-tips, .snapshot .privacy-row, .snapshot .checkbox, .snapshot .success-mark, .snapshot .assurance-note,
 .snapshot .certificate-stations, .snapshot .certificate-stations > view, .snapshot .certificate-meta, .snapshot .certificate-actions, .snapshot .complete-seal,
 .snapshot .week-summary, .snapshot .energy-ring, .snapshot .energy-ring view, .snapshot .metric-grid, .snapshot .calendar-nav, .snapshot .week-labels, .snapshot .week-days,
@@ -65,18 +65,18 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .snapshot .badge-grid, .snapshot .badge, .snapshot .settings-list > view, .snapshot .setting-icon { display: revert-layer; }
 /* Native custom elements have no UA layout; explicit source display rules win. */
 .snapshot .route-heading,.snapshot .profile-dot,.snapshot .weather-symbol,.snapshot .challenge,.snapshot .route-card-head,.snapshot .map-hint,.snapshot .section-head,
-.snapshot .station-number,.snapshot .reader,.snapshot .reader-phone,.snapshot .reader-tag,.snapshot .status-line,.snapshot .checkpoint-bar,.snapshot .checkpoint-bar > view,
-.snapshot .motion-card,.snapshot .timer-card,.snapshot .privacy-row,.snapshot .checkbox,.snapshot .success-mark,.snapshot .complete-seal,
+.snapshot .station-number,.snapshot .reader,.snapshot .reader-phone,.snapshot .reader-tag,.snapshot .status-line,
+.snapshot .privacy-row,.snapshot .checkbox,.snapshot .success-mark,.snapshot .complete-seal,
 .snapshot .week-summary,.snapshot .energy-ring,.snapshot .energy-ring view,.snapshot .calendar-nav,.snapshot .day-cell,.snapshot .history-date,.snapshot .profile-hero,
 .snapshot .profile-avatar,.snapshot .level-head,.snapshot .level-foot,.snapshot .badge,.snapshot .setting-icon { display: flex; }
-.snapshot .weather,.snapshot .station-card,.snapshot .checkin-actions,.snapshot .safety-card,.snapshot .camera-prompt,.snapshot .photo-tips,.snapshot .assurance-note,
+.snapshot .weather,.snapshot .station-card,.snapshot .checkin-actions,.snapshot .camera-prompt,.snapshot .photo-tips,.snapshot .assurance-note,
 .snapshot .certificate-stations,.snapshot .certificate-stations > view,.snapshot .certificate-actions,.snapshot .metric-grid,.snapshot .week-labels,.snapshot .week-days,
 .snapshot .history-item,.snapshot .badge-grid,.snapshot .settings-list > view { display: grid; }
 .snapshot .certificate-meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 .snapshot .eyebrow,.snapshot .section-kicker,.snapshot .section-title,.snapshot .route-heading .page-title,.snapshot .page-title,.snapshot .challenge-code,
 .snapshot .challenge-title,.snapshot .challenge-desc,.snapshot .challenge-time text,.snapshot .weather-copy text,.snapshot .weather-score text,
 .snapshot .route-card-title,.snapshot .station-copy text,.snapshot .station-meta text,.snapshot .result-title,.snapshot .result-message,
-.snapshot .instruction-title,.snapshot .instruction-copy,.snapshot .safety-card text,.snapshot .upload-title,.snapshot .upload-copy,.snapshot .camera-prompt text,
+.snapshot .upload-title,.snapshot .upload-copy,.snapshot .camera-prompt text,
 .snapshot .photo-tips text,.snapshot .certificate-code,.snapshot .certificate-title,.snapshot .certificate-subtitle,.snapshot .certificate-owner,.snapshot .score text,
 .snapshot .certificate-note,.snapshot .summary-copy text,.snapshot .metric-grid text,.snapshot .history-date text,.snapshot .history-copy text,
 .snapshot .profile-copy text,.snapshot .empty-history text { display: block; }
@@ -126,17 +126,10 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .snapshot .status-dot.success { background: var(--deep); box-shadow: 0 0 0 3.5px #5664c21a; }
 .snapshot .status-dot.error { background: var(--coral); box-shadow: 0 0 0 3.5px #f15b681a; }
 .snapshot .assurance-note { background: var(--peach); border-left-color: var(--orange); color: #77615b; }
-.snapshot .checkpoint-bar { color: #fff; background: var(--deep); }
-.snapshot .motion-card { background: var(--peach); }
-.snapshot .motion-orbit { border-color: #ff922e1c; }
-.snapshot .orbit-two { border-color: #ffd34e28; }
 .snapshot .body,.snapshot .photo-body { background: var(--primary); border-color: var(--deep); }
 .snapshot .head,.snapshot .neck,.snapshot .arm,.snapshot .hand,.snapshot .photo-head,.snapshot .photo-arm { border-color: var(--deep); }
 .snapshot .head::before { background: var(--deep); }
 .snapshot .body::after { border-bottom-color: var(--coral); }
-.snapshot .motion-label { background: #3f4b9feb; }
-.snapshot .timer-button { background: var(--primary); min-height: 34px; }
-.snapshot .timer-button.complete { color: var(--deep); background: var(--lavender); }
 .snapshot .photo-stage { background: var(--peach); border-color: #edb08a; }
 .snapshot .photo-mountain { background: #ffd477; }
 .snapshot .mountain-two { background: #f7a154; }
@@ -198,28 +191,3 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
   .swatches { gap: 14px; }
 }
 @media (prefers-reduced-motion: reduce) { .snapshot *, .snapshot *::before { animation: none !important; transition: none !important; } }
-
-/* Display each original square panel without stretching the artwork. */
-.snapshot .motion-card {
-  height: 0;
-  display: block;
-  padding: 0 0 100%;
-  border: 0;
-  background: #edf4fd;
-}
-.snapshot .action-guide-frame {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-.snapshot .action-guide-frame img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: block;
-  width: 300%;
-  max-width: none;
-  height: auto;
-}
-.snapshot .action-guide-frame.scene-wrist img { left: -100%; }
-.snapshot .action-guide-frame.scene-back img { left: -200%; }

@@ -14,6 +14,8 @@ Page({
     progressTitle: '准备出发',
     ctaLabel: '扫描起点',
     mapHint: '先扫描起点二维码，开始计时',
+    elapsedLabel: '00:00:00',
+    timingStatus: '起点扫码后开始',
     user: userStore.defaultUser(),
     userInitial: '我',
     activity: getActivityContext(),
@@ -21,13 +23,25 @@ Page({
   },
 
   onLoad() {
+    if (typeof setInterval === 'function') this.timer = setInterval(() => this.refreshTiming(), 1000)
     this.refreshProgress()
     const user = userStore.readUser()
     if (!userStore.isProfileComplete(user)) this.setData({ profileVisible: true })
   },
 
   onShow() {
+    if (!this.timer && typeof setInterval === 'function') this.timer = setInterval(() => this.refreshTiming(), 1000)
     this.refreshProgress()
+  },
+
+  onHide() {
+    if (this.timer) clearInterval(this.timer)
+    this.timer = null
+  },
+
+  onUnload() {
+    if (this.timer) clearInterval(this.timer)
+    this.timer = null
   },
 
   onPullDownRefresh() {
@@ -46,7 +60,7 @@ Page({
       done: index < progress.completed,
       current: started && index === progress.completed && progress.completed < 3,
       locked: !started || index > progress.completed,
-      status: index < progress.completed ? 'DONE' : started && index === progress.completed ? 'NEXT' : 'LOCKED'
+      status: index < progress.completed ? '已完成' : started && index === progress.completed ? '下一点' : '待解锁'
     }))
 
     const progressTitle = !started
@@ -82,6 +96,22 @@ Page({
       user: userStore.readUser(),
       userInitial: this.getUserInitial(userStore.readUser()),
       activity: getActivityContext()
+    })
+    this.refreshTiming(progress)
+  },
+
+  refreshTiming(progress = progressStore.readProgress()) {
+    const startedAt = Number(progress.startedAt) || 0
+    const finishedAt = Number(progress.completedAt) || 0
+    const elapsed = startedAt ? Math.max(0, (finishedAt || Date.now()) - startedAt) : 0
+    const seconds = Math.floor(elapsed / 1000)
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const rest = seconds % 60
+    const pad = (value) => String(value).padStart(2, '0')
+    this.setData({
+      elapsedLabel: `${pad(hours)}:${pad(minutes)}:${pad(rest)}`,
+      timingStatus: !startedAt ? '起点扫码后开始' : finishedAt ? '计时已结束' : '计时进行中'
     })
   },
 
@@ -156,14 +186,14 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '码上出发·健康同行，一起走完这条健康路线',
+      title: '步履时光·健康同行，一起走完这条健康路线',
       path: '/pages/route/route'
     }
   },
 
   onShareTimeline() {
     return {
-      title: '码上出发·健康同行'
+      title: '步履时光·健康同行'
     }
   }
 })

@@ -3,7 +3,7 @@ const path = require('node:path')
 
 const root = path.resolve(__dirname, '../../..')
 const mini = path.join(root, 'miniprogram')
-const pages = ['route', 'checkin', 'action', 'upload', 'certificate', 'records', 'profile']
+const pages = ['route', 'checkin', 'upload', 'certificate', 'records', 'profile']
 const sources = [path.join(mini, 'app.wxss'), ...pages.map((page) => path.join(mini, 'pages', page, `${page}.wxss`))]
 const styles = sources.map((file) => fs.readFileSync(file, 'utf8'))
   .join('\n')
@@ -29,7 +29,7 @@ const html = replaceLiteral(
     ),
     '/* PREVIEW_DATA */',
     `const previewData = ${JSON.stringify({
-    stations,
+    stations: stations.map(({ id, title, location, distance, sourceMarker, tag }) => ({ id, title, location, distance, sourceMarker, tag })),
     points: route.getMapPoints(),
     segments: route.getMapSegments(),
     markers: route.getMapMarkers(),

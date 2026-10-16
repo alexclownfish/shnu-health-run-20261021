@@ -2,12 +2,12 @@
 .upload-title, .upload-copy { display: block; }
 .upload-title { margin-top: 16rpx; font-size: 40rpx; font-weight: 800; }
 .upload-copy { margin: 10rpx 0 28rpx; color: var(--muted); font-size: 21rpx; }
-.photo-stage { position: relative; overflow: hidden; height: 670rpx; border: 2rpx dashed #e5ae8d; border-radius: 18rpx; background: var(--peach); }
+.photo-stage { position: relative; overflow: hidden; height: 670rpx; border: 2rpx dashed #80c0e0; border-radius: 18rpx; background: var(--peach); }
 .photo-preview { width: 100%; height: 100%; }
 .photo-sun { position: absolute; top: 68rpx; right: 72rpx; width: 88rpx; height: 88rpx; border-radius: 50%; background: var(--yellow); }
-.photo-mountain { position: absolute; width: 450rpx; height: 450rpx; background: #f6b27e; transform: rotate(45deg); }
+.photo-mountain { position: absolute; width: 450rpx; height: 450rpx; background: #80c0e0; transform: rotate(45deg); }
 .mountain-one { left: -210rpx; bottom: -270rpx; }
-.mountain-two { right: -250rpx; bottom: -310rpx; background: #e97848; }
+.mountain-two { right: -250rpx; bottom: -310rpx; background: #21b9d2; }
 .photo-person { position: absolute; z-index: 3; left: 50%; bottom: 128rpx; width: 170rpx; height: 300rpx; transform: translateX(-50%); }
 .photo-head { position: absolute; z-index: 2; top: 0; left: 50rpx; width: 75rpx; height: 80rpx; border: 7rpx solid var(--ink); border-radius: 50%; background: #ffc3a6; }
 .photo-body { position: absolute; top: 76rpx; left: 20rpx; width: 132rpx; height: 220rpx; border: 7rpx solid var(--ink); border-radius: 52rpx 52rpx 14rpx 14rpx; background: var(--orange); }
@@ -17,7 +17,7 @@
 .camera-icon { font-size: 39rpx; text-align: center; }
 .camera-prompt text { display: block; }
 .camera-prompt view text:first-child { font-size: 23rpx; font-weight: 700; }
-.camera-prompt view text:last-child { margin-top: 5rpx; color: #e9ebff; font-size: 17rpx; }
+.camera-prompt view text:last-child { margin-top: 5rpx; color: #dff5fa; font-size: 17rpx; }
 .change-photo { position: absolute; right: 20rpx; bottom: 20rpx; padding: 12rpx 18rpx; border-radius: 24rpx; color: #fff; background: rgba(43,35,48,.84); font-size: 18rpx; }
 .tips-head { margin-top: 30rpx; }
 .photo-tips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14rpx; }
@@ -29,5 +29,5 @@
 .checkbox.checked { background: var(--orange); }
 .success-mark { width: 128rpx; height: 128rpx; display: flex; align-items: center; justify-content: center; margin: 8rpx auto 27rpx; border-radius: 50%; color: #fff; background: var(--deep); box-shadow: 0 0 0 19rpx var(--lavender); font-size: 64rpx; font-weight: 700; }
 .storage-notice { display: block; margin: -14rpx 0 24rpx; color: var(--deep); font-size: 19rpx; font-weight: 600; }
-.success-track { overflow: hidden; height: 13rpx; margin: 0 0 30rpx; border-radius: 8rpx; background: #ece8e8; }
+.success-track { overflow: hidden; height: 13rpx; margin: 0 0 30rpx; border-radius: 8rpx; background: #dbeaf0; }
 .success-track view { height: 100%; background: linear-gradient(90deg, var(--primary), var(--yellow)); transition: width .4s ease; }

@@ -21,7 +21,7 @@ activityId + OPENID 确定 `_id`，原子 add，冲突查询首条，不覆盖�
 | EXCLUDED_DEVELOPER | 删除待交项，不入名单 |
 | IDENTITY_REQUIRED / ENVIRONMENT_NOT_ALLOWED / ACTIVITY_NOT_ALLOWED / BUILD_NOT_ALLOWED / INVALID_PAYLOAD / REPORTING_CLOSED | blocked 留存，待人工排查，不自动高频重试 |
 
-配置失败、断网、blocked 都不阻断本地凭证。无法用摘要证明真实扫码/动作，计时来自手机。
+配置失败、断网、blocked 都不阻断本地凭证。无法用摘要证明真实扫码，计时来自手机。
 
 ## Admin Export CLI
 

@@ -16,7 +16,7 @@ const originalPayloads = [
   'HRQ1|999|QR-FINISH-A|3c7a1e9b5d2f8a604e1c9b7d3f5a2e8c'
 ]
 const labels = ['起点', '打卡点1', '打卡点2', '打卡点3', '终点']
-const hint = '请在微信小程序「绿色康跑」内点击“扫码打卡”使用。'
+const hint = '请在微信小程序「悠湃体育」内点击“扫码打卡”使用。'
 
 async function verifyFiles(files) {
   for (let index = 0; index < files.length; index += 1) {

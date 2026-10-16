@@ -4,17 +4,17 @@
 @keyframes auth-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .sheet-handle { width: 72rpx; height: 7rpx; margin: 0 auto 20rpx; border-radius: 8rpx; background: var(--line); }
 .auth-heading { display: flex; align-items: center; justify-content: space-between; }
-.auth-title { display: block; color: #2b2330; font-size: 32rpx; font-weight: 800; }
-.auth-copy { display: block; margin-top: 5rpx; color: #887983; font-size: 18rpx; }
+.auth-title { display: block; color: var(--ink); font-size: 32rpx; font-weight: 800; }
+.auth-copy { display: block; margin-top: 5rpx; color: var(--muted); font-size: 18rpx; }
 .avatar-choice::after, .confirm-button::after, .later-button::after { border: 0; }
-.profile-fields { display: flex; align-items: center; gap: 20rpx; margin-top: 20rpx; padding: 17rpx 20rpx; border: 1rpx solid #f0d9c8; border-radius: 14rpx; background: #fff8f0; text-align: left; }
-.avatar-choice { position: relative; overflow: hidden; flex: 0 0 82rpx; width: 82rpx; min-width: 82rpx; max-width: 82rpx; height: 82rpx; min-height: 82rpx; margin: 0; padding: 0; border: 0; border-radius: 50%; color: #3f4b9f; background: #ffd34e; line-height: 1; }
+.profile-fields { display: flex; align-items: center; gap: 20rpx; margin-top: 20rpx; padding: 17rpx 20rpx; border: 1rpx solid var(--line); border-radius: 14rpx; background: var(--paper); text-align: left; }
+.avatar-choice { position: relative; overflow: hidden; flex: 0 0 82rpx; width: 82rpx; min-width: 82rpx; max-width: 82rpx; height: 82rpx; min-height: 82rpx; margin: 0; padding: 0; border: 0; border-radius: 50%; color: var(--deep); background: var(--yellow); line-height: 1; }
 .avatar-choice image { width: 100%; height: 100%; }
 .avatar-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .avatar-placeholder text:first-child { font-size: 27rpx; line-height: 22rpx; }
 .avatar-placeholder text:last-child { margin-top: 6rpx; font-size: 15rpx; }
 .nickname-field { flex: 1; min-width: 0; }
-.nickname-field > text { color: #887983; font-size: 18rpx; }
-.nickname-field input { width: 100%; height: 48rpx; margin-top: 2rpx; color: #2b2330; font-size: 24rpx; font-weight: 700; }
-.confirm-button { min-height: 78rpx; margin: 16rpx 0 0; border: 0; border-radius: 14rpx; color: #fff; background: #5664c2; font-size: 24rpx; font-weight: 700; line-height: 78rpx; }
-.later-button { width: auto; min-width: 0; min-height: 54rpx; margin: 0; padding: 0 8rpx; color: #887983; background: transparent; font-size: 20rpx; line-height: 54rpx; }
+.nickname-field > text { color: var(--muted); font-size: 18rpx; }
+.nickname-field input { width: 100%; height: 48rpx; margin-top: 2rpx; color: var(--ink); font-size: 24rpx; font-weight: 700; }
+.confirm-button { min-height: 78rpx; margin: 16rpx 0 0; border: 0; border-radius: 14rpx; color: #fff; background: var(--deep); font-size: 24rpx; font-weight: 700; line-height: 78rpx; }
+.later-button { width: auto; min-width: 0; min-height: 54rpx; margin: 0; padding: 0 8rpx; color: var(--muted); background: transparent; font-size: 20rpx; line-height: 54rpx; }

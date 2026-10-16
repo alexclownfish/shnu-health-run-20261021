@@ -20,7 +20,7 @@ ACTIVITY_CONFIG 是每个云环境中 submitCompletion 的 JSON 环境变量，�
 
 ## Cloud Records
 
-测试环境 finishers_test，正式环境 finishers。集合客户端 read/write 均为 false。
+测试环境 finishers，正式环境 finishers。集合客户端 read/write 均为 false。
 
 | Field | Source / Rule |
 | --- | --- |

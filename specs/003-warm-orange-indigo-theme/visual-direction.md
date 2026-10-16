@@ -10,7 +10,7 @@
 
 - 暖米白大背景和白色内容面
 - 橙色到亮橙色的活动主卡
-- 靛蓝色底部主按钮和动作主体
+- 靛蓝色底部主按钮和扫码主体
 - 黄色、粉色、珊瑚色的点位和状态区分
 - 细边框、少量圆角、轻阴影，不增加新的卡片层级
 
@@ -48,7 +48,7 @@
 | --- | --- | --- | --- |
 | 路线首页 | `--paper` + `--white` | `--orange` challenge card, `--primary` CTA | yellow/current, deep/done, coral/third point |
 | 扫码打卡 | `--paper` + `--lavender` reader | `--primary` scanner phone | deep/success, coral/error, yellow active |
-| 动作引导 | `--paper` + `--peach` motion card | `--deep` header, `--primary` CTA | yellow timer, coral safety/error |
+| 扫码打卡 | `--paper` + `--peach` reader card | `--deep` header, `--primary` CTA | coral error |
 | 照片上传 | `--paper` + `--peach` photo stage | `--orange` illustration, `--primary` CTA | yellow selection, deep saved |
 | 运动记录 | `--paper` + `--white` | `--deep` summary card | orange energy, yellow active day |
 | 个人中心 | `--paper` + `--white` | `--deep` profile hero | yellow/orange badges, coral warning |
@@ -57,7 +57,7 @@
 ## 4. What Does Not Change
 
 - 页面结构、组件层级、布局尺寸、文案、字体层级和圆角原则不因换肤重做。
-- 扫码、点位校验、路线顺序、动作计时、照片保存和 Canvas 生成逻辑不变。
+- 扫码、点位校验、路线顺序、照片保存和 Canvas 生成逻辑不变。
 - 地图坐标、路线折线、点位点击事件和本地进度数据不变。
 - 不新增图片资源作为第一版主题的前置条件。
 

@@ -18,7 +18,11 @@ const REFERENCE_FRAME = {
 
 const TASK_TRACK_INDEX = CHECKPOINTS.map((point) => point.trackIndex)
 const TASK_DISTANCE_KM = CHECKPOINTS.map((point) => point.distanceKm)
-const TOTAL_DISTANCE_KM = routeSource.source.distanceMeters / 1000
+// The KMZ's measured geometry is retained in source.distanceMeters.  The
+// event advertises a 3.5 km route, so all participant-facing totals use the
+// explicit activity distance while the original track and checkpoint order
+// remain unchanged.
+const TOTAL_DISTANCE_KM = (routeSource.source.activityDistanceMeters || routeSource.source.distanceMeters) / 1000
 const PI = Math.PI
 const AXIS = 6378245.0
 const EE = 0.00669342162296594323
@@ -83,7 +87,7 @@ function getMapMarkers(completed = 0) {
   const markers = [{
     id: 0,
     ...points[0],
-    label: { content: 'S', color: '#ffffff', fontSize: 12, bgColor: '#f76b2b', borderColor: '#ffffff', borderWidth: 2, borderRadius: 24, padding: 7, anchorX: -38, anchorY: -24 }
+    label: { content: 'S', color: '#ffffff', fontSize: 12, bgColor: '#21b9d2', borderColor: '#ffffff', borderWidth: 2, borderRadius: 24, padding: 7, anchorX: -38, anchorY: -24 }
   }]
   CHECKPOINTS.forEach((checkpoint, index) => {
     const point = wgs84ToGcj02(checkpoint.latitude, checkpoint.longitude)
@@ -94,9 +98,9 @@ function getMapMarkers(completed = 0) {
       ...point,
       label: {
         content: done ? '✓' : String(index + 1),
-        color: done || current ? '#ffffff' : '#2b2330',
+        color: done || current ? '#ffffff' : '#073b67',
         fontSize: 12,
-        bgColor: done ? '#3f4b9f' : current ? '#ffd34e' : '#ffffff',
+        bgColor: done ? '#0058a5' : current ? '#ffd22e' : '#ffffff',
         borderColor: '#ffffff',
         borderWidth: 2,
         borderRadius: 24,
@@ -106,7 +110,7 @@ function getMapMarkers(completed = 0) {
       },
       callout: current ? {
         content: checkpoint.name,
-        color: '#3f4b9f',
+        color: '#0058a5',
         fontSize: 11,
         borderRadius: 8,
         bgColor: '#ffffff',
@@ -123,7 +127,7 @@ function getMapMarkers(completed = 0) {
       content: 'F',
       color: '#ffffff',
       fontSize: 12,
-      bgColor: '#3f4b9f',
+      bgColor: '#0058a5',
       borderColor: '#ffffff',
       borderWidth: 2,
       borderRadius: 24,

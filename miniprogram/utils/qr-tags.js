@@ -1,4 +1,4 @@
-const QR_USAGE_HINT = '请在微信小程序「绿色康跑」内点击“扫码打卡”使用。'
+const QR_USAGE_HINT = '请在微信小程序「悠湃体育」内点击“扫码打卡”使用。'
 
 const QR_TAGS = [
   {

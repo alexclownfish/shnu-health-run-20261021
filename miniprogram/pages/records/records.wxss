@@ -2,7 +2,7 @@
 .page-title { display: block; }
 .week-summary { min-height: 270rpx; display: flex; align-items: center; justify-content: space-between; margin-top: 28rpx; padding: 38rpx; border-radius: 18rpx; color: #fff; background: var(--deep); }
 .summary-copy text { display: block; }
-.summary-copy text:first-child { color: #e9ebff; font-size: 20rpx; }
+.summary-copy text:first-child { color: #dff5fa; font-size: 20rpx; }
 .summary-copy text:nth-child(2) { margin: 7rpx 0; color: var(--yellow); font-family: monospace; font-size: 74rpx; font-weight: 600; }
 .summary-copy text:last-child { color: #d9dcff; font-size: 15rpx; }
 .energy-ring { width: 168rpx; height: 168rpx; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: conic-gradient(var(--yellow) var(--percent), rgba(255,255,255,.16) 0); }

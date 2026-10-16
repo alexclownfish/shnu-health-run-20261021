@@ -1,7 +1,7 @@
 {
-  "appid": "wx44b333d3d8cef506",
-  "projectname": "health-run",
-  "description": "轻跑 NFC 健康打卡微信小程序",
+  "appid": "wx9d16b2e04851fc36",
+  "projectname": "shnu-health-walk",
+  "description": "步履时光·健康同行微信小程序",
   "miniprogramRoot": "miniprogram/",
   "cloudfunctionRoot": "cloudfunctions/",
   "compileType": "miniprogram",

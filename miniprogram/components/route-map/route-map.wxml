@@ -1,21 +1,4 @@
 <view class="map-shell">
-  <map
-    id="routeMap"
-    class="route-map"
-    latitude="{{center.latitude}}"
-    longitude="{{center.longitude}}"
-    scale="16"
-    markers="{{markers}}"
-    polyline="{{polyline}}"
-    include-points="{{points}}"
-    enable-zoom="{{true}}"
-    enable-scroll="{{true}}"
-    enable-rotate="{{false}}"
-    enable-overlooking="{{false}}"
-    show-location="{{false}}"
-    bindmarkertap="handleMarkerTap"
-    bindtap="handleMapTap"
-  ></map>
-  <view class="map-badge"><text>微信实景地图</text></view>
-  <view class="map-compass"><text>▲</text></view>
+  <image class="route-map-image" src="/assets/shnu-route-map.jpg" mode="widthFix" lazy-load="true" />
+  <view class="map-badge"><text>活动路线示意图</text></view>
 </view>

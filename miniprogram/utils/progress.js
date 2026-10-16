@@ -14,7 +14,6 @@ function defaultProgress() {
     participantId: '',
     reportingContext: null,
     checkins: {},
-    actions: {},
     photos: {},
     history: [],
     routeId: routeData.ROUTE_ID
@@ -35,7 +34,6 @@ function normalizeProgress(value) {
     participantId: typeof source.participantId === 'string' ? source.participantId : '',
     reportingContext: source.reportingContext && typeof source.reportingContext === 'object' ? source.reportingContext : null,
     checkins: source.checkins && typeof source.checkins === 'object' ? source.checkins : {},
-    actions: source.actions && typeof source.actions === 'object' ? source.actions : {},
     photos: source.photos && typeof source.photos === 'object' ? source.photos : {},
     history: Array.isArray(source.history) ? source.history : [],
     routeId: source.routeId || routeData.ROUTE_ID
@@ -152,32 +150,10 @@ function hasValidCheckIn(value, index, ttl = 20 * 60 * 1000) {
     record.at && elapsed >= 0 && elapsed <= ttl)
 }
 
-function startAction(index) {
-  const current = readProgress()
-  const safeIndex = Math.min(Math.max(Number(index) || 0, 0), 2)
-  if (safeIndex !== current.completed || !hasValidCheckIn(current, safeIndex)) return current
-  current.actions[String(safeIndex)] = {
-    startedAt: Date.now(),
-    completedAt: 0
-  }
-  return saveProgress(current)
-}
-
-function completeAction(index) {
-  const current = readProgress()
-  const safeIndex = Math.min(Math.max(Number(index) || 0, 0), 2)
-  const action = current.actions[String(safeIndex)]
-  if (safeIndex !== current.completed || !action || !action.startedAt) return current
-  action.completedAt = Date.now()
-  current.actions[String(safeIndex)] = action
-  return saveProgress(current)
-}
-
 function canUpload(value, index) {
   const current = normalizeProgress(value)
-  const action = current.actions[String(index)]
   return Boolean(current.startedAt && current.startCheckIn && !current.completedAt &&
-    Number(index) === current.completed && action && action.completedAt)
+    Number(index) === current.completed && hasValidCheckIn(current, Number(index)))
 }
 
 function completeStation(index, photoPath) {
@@ -242,8 +218,6 @@ module.exports = {
   isFinished,
   getCurrentCheckpoint,
   hasValidCheckIn,
-  startAction,
-  completeAction,
   canUpload,
   completeStation,
   resetProgress,

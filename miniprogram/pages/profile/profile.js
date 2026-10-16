@@ -64,7 +64,7 @@ Page({
   resetProgress() {
     wx.showModal({
       title: '重置本次路线',
-      content: '会清除当前路线的点位、动作和照片记录，历史数据也会一并清除。',
+      content: '会清除当前路线的点位和照片记录，历史数据也会一并清除。',
       confirmText: '确认重置',
       confirmColor: '#F15B68',
       success: (result) => {
@@ -80,7 +80,7 @@ Page({
   showHelp() {
     wx.showModal({
       title: '打卡流程',
-      content: '先扫描起点开始计时，再依次扫描三个任务点、完成动作并拍照上传；最后扫描终点结束计时并生成凭证。',
+      content: '先扫描起点开始计时，再依次扫描三个任务点并拍照上传；最后扫描终点结束计时并生成凭证。',
       showCancel: false,
       confirmColor: '#5664C2'
     })

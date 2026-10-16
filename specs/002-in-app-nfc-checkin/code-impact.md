@@ -5,7 +5,7 @@
 | Module | Change |
 |--------|--------|
 | `pages/checkin` | One explicit QR action for all devices; no platform or UID branch |
-| `pages/route`, `pages/action`, `pages/profile`, `pages/records` | Scan-specific labels and recovery messages |
+| `pages/route`, `pages/checkin`, `pages/upload`, `pages/profile`, `pages/records` | Scan-specific labels and recovery messages |
 | `utils/qr-tags.js`, `utils/qr-validation.js` | Retain exact three-point payloads and current-point matching |
 | `utils/progress.js` | QR evidence for new check-ins; keep existing local progress and completed points |
 | NFC utilities | Retired from the application package |

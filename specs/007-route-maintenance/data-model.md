@@ -16,11 +16,11 @@
 - 轨迹：每个点为 [记录序号,纬度,经度]，357个点；segmentStarts=[0,67]，两段分别绘制，记录间隙不补线。
 - 坐标来源：当前预期 WGS84，地图输出 GCJ-02；从腾讯/高德等选取坐标需确认坐标系，不能重复转换。
 - 起终点：目前使用数组首尾点，无独立端点坐标字段。
-- 距离：任务累计[0.35484,0.86500,1.06608]公里，按分段球面距离累加；总程1.659015公里取源Distance元数据，展示1.66公里。stations距离文字与首页标题均读取共享配置。
+- 距离：任务阶段按路线数据计算；活动对外总里程由 source.activityDistanceMeters 配置为3.50公里。stations距离文字读取共享路线，首页、记录页和完赛凭证读取共享活动总里程。
 
 ## 点位资料
 
-stations.js 的 id、title、location、distance、sourceMarker、tag、motion、heading、instruction、duration、safety、success。
+stations.js 的 id、title、location、distance、sourceMarker、tag、success。任务点不再保存动作图示、动作说明或动作等待计时字段；扫码成功后直接进入照片上传。
 
 ## 二维码资料
 
@@ -31,4 +31,4 @@ qr-tags.js 的 pointCode、checkpointType、checkpointIndex、stationIndex、qrI
 
 本机routeId=route-20261011，存储键patchwalk-progress-v4-route-20261011。旧patchwalk-progress-v3记录不删除、不迁移，新路线从起点开始；旧资料仍在存储但新页面不展示。
 
-routeVersion=route-20261011-v1；开发activityId=health-run-test-20261011，云环境沿用cloudbase-d2gd1ocuha5342ad6。云端以activityId + 用户去重，routeVersion用于版本校验与导出过滤。旧待上报摘要保留原目标，不重标或发送至新活动。正式上报继续关闭。
+routeVersion=route-20261011-v1；测试 activityId=health-run-2026-event02，测试环境为 cloud1-d1g886bht0f7cbf69，正式环境为 shnu-health-run-20261021-dc2d3ff。云端以activityId + 用户去重，routeVersion用于版本校验与导出过滤。旧待上报摘要保留原目标，不重标或发送至新活动。

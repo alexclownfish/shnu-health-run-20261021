@@ -6,17 +6,17 @@
 
 ## Summary
 
-保留本地扫码、动作、照片与凭证，在成功终点记录后冻结并上报最小完赛摘要。
+保留本地扫码、照片与凭证，在成功终点记录后冻结并上报最小完赛摘要。
 一个 `submitCompletion` 云函数分别部署到测试、正式两个云环境，写入各自集合。
 管理员电脑可凭云账号权限直接读库，或使用已授权控制台导出的 JSON 在本地转换为 `.xlsx`，不增加小程序管理页面。
 这是少量云端后端和数据库，不再是完全纯前端；但本地打卡不等待网络。
-开发环境 cloudbase-d2gd1ocuha5342ad6 与正式环境 health-run-d1gj2x9lm0e9ca17b 已填入客户端及服务模板。按用户要求，本轮仅开启开发/体验上报，正式目标 enabled=false。开发测试窗口为 2026-10-09 至 2026-11-09，补交至 11-10（Asia/Shanghai）；正式活动与排除账号后续确定。
+开发环境 cloud1-d1g886bht0f7cbf69 与正式环境 shnu-health-run-20261021-dc2d3ff 已填入客户端及服务模板；测试与正式活动均使用 health-run-2026-event02，正式配置需在发布前确认排除账号。活动窗口为 2026-10-09 至 2026-11-09，补交至 11-10（Asia/Shanghai）。
 
 ## Technical Context
 
 - 原生微信小程序 JavaScript、现有本地 storage；服务与管理员工具 Node.js。
 - 云函数 `wx-server-sdk@3.0.4`；管理员 `@cloudbase/node-sdk@3.18.3`、`exceljs@4.4.0`。
-- 测试环境 `finishers_test`，正式环境 `finishers`，活动配置为云函数环境变量 `ACTIVITY_CONFIG`。
+- 测试环境 `finishers`，正式环境 `finishers`，活动配置为云函数环境变量 `ACTIVITY_CONFIG`。
 - 独立本地 outbox 保留未提交摘要，路线重置不清空；照片不上传。
 - 自动测试：现有 29 项 + 名单 39 项，包括 XLSX 读回、开发独立启用、安全错误诊断、JSON Lines 转换与无凭据 shell 端到端测试。
 - 不提供排名、实名、可信到场、防作弊、跨设备进度恢复或活动管理后台。
@@ -69,7 +69,7 @@ specs/005-finisher-list-export/          # spec / plan / research / model / cont
 
 ## Deployment Gate
 
-当前按 [development-setup.md](development-setup.md) 联调开发环境。用户已确认体验版写入 finishers_test；本代理受官方 CLI 服务端口与电脑控制权限限制未执行部署。客户端权限、管理员凭据和 Excel 云读取仍待验证。
+当前按 [development-setup.md](development-setup.md) 联调开发环境。用户已确认体验版写入 finishers；本代理受官方 CLI 服务端口与电脑控制权限限制未执行部署。客户端权限、管理员凭据和 Excel 云读取仍待验证。
 正式部署延后，再按 [deployment.md](deployment.md) 验证正式环境。
 先用体验版在测试环境验证，然后发布正式版。提供真实活动时间、开发账号排除名单与保留期限。
 每次活动/路线变更冻结一份新配置；活动期间不要修改 title、点位清单或版本，避免使既有记录失效。

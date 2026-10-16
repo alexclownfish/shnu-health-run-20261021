@@ -7,7 +7,8 @@ module.exports = {
     "kmlSha256": "978d32495b70f909d89cca4373834591b47e58d32b37dc2f59925adf2434f91f",
     "coordinateSystem": "WGS84",
     "coordinateSystemNote": "Standard KML assumption; verify on site.",
-    "distanceMeters": 1659.015140064009
+    "distanceMeters": 1659.015140064009,
+    "activityDistanceMeters": 3500
   },
   "segmentStarts": [
     0,

@@ -2,13 +2,13 @@
   <view wx:if="{{certificateReady}}" class="certificate card">
     <view class="certificate-top">
       <view class="decor decor-one"></view><view class="decor decor-two"></view>
-      <text class="certificate-code mono">PATCH COMPLETE / RELEASE</text>
-      <text class="certificate-title">码上出发·健康同行</text>
+      <text class="certificate-code mono">步履时光 / 完赛凭证</text>
+      <text class="certificate-title">步履时光·健康同行</text>
       <text class="certificate-subtitle">完成实景健康路线</text>
       <view class="complete-seal">✓</view>
     </view>
     <view class="certificate-body">
-      <text class="certificate-id mono">PATCH-WALK-{{certificateId}}</text>
+      <text class="certificate-id mono">YOU-PAI-{{certificateId}}</text>
       <text class="certificate-owner">{{ownerName}} 的健康完赛凭证</text>
       <view class="score"><text>3/3</text><text>打卡完成</text></view>
       <view class="certificate-stations">
@@ -18,7 +18,7 @@
           <text>完成</text>
         </view>
       </view>
-      <text class="certificate-note">回到起点 · 能量已释放</text>
+      <text class="certificate-note">{{distance}} km · 起终点计时完成 · 能量已释放</text>
       <view class="certificate-meta">
         <text>完成时间 <text>{{completedTime}}</text></text>
         <text>总用时 <text>{{completionDuration}}</text></text>

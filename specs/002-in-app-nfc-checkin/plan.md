@@ -4,7 +4,7 @@
 
 ## Summary
 
-把原先的 NFC 混合方案收敛为一个平台无关的扫码入口。路线页仍只负责打开当前点位打卡页；打卡页读取本地当前进度，用户点击 `扫码打卡` 后调用 `wx.scanCode`，使用发布包内的 QR 清单做精确匹配。成功结果复用现有本地动作、照片和完赛流程。
+把原先的 NFC 混合方案收敛为一个平台无关的扫码入口。路线页仍只负责打开当前点位打卡页；打卡页读取本地当前进度，用户点击 `扫码打卡` 后调用 `wx.scanCode`，使用发布包内的 QR 清单做精确匹配。成功结果直接进入照片上传，继续现有本地点位和完赛流程。
 
 ## Technical Context
 
@@ -38,7 +38,7 @@ The QR is plain text and does not open the mini-program from WeChat home scannin
 
 - `miniprogram/pages/checkin/checkin.js`: remove platform/NFC branches; retain one lifecycle-safe QR flow.
 - `miniprogram/pages/checkin/checkin.wxml`: render one `扫码打卡` action.
-- `miniprogram/pages/action/action.js`, `profile.js`, `records.wxml`, `route.wxml`: update user-facing NFC wording.
+- `miniprogram/pages/upload/upload.wxml`, `profile.js`, `records.wxml`, `route.wxml`: update user-facing QR/photo wording.
 - `miniprogram/utils/progress.js`: make new check-ins QR-only and keep existing local workflow.
 - `miniprogram/utils/qr-tags.js`, `qr-validation.js`: retain QR inventory and strict validation.
 - `tests/run-tests.js`: remove NFC/platform tests and assert no runtime NFC dependency.
@@ -46,7 +46,7 @@ The QR is plain text and does not open the mini-program from WeChat home scannin
 
 ## Verification
 
-Run the bundled Node test harness, then test the latest experience build on representative Android, HarmonyOS, and iOS devices. Check current-point success, wrong-point rejection, malformed/ordinary URL rejection, cancel, camera permission denial, native scanner return, offline behavior, and the existing action/photo/certificate flow.
+Run the bundled Node test harness, then test the latest experience build on representative Android, HarmonyOS, and iOS devices. Check current-point success, wrong-point rejection, malformed/ordinary URL rejection, cancel, camera permission denial, native scanner return, offline behavior, and the existing photo/certificate flow.
 
 ## Decision Record
 

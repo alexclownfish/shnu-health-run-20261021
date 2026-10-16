@@ -20,8 +20,9 @@ Page({
     const stationIndex = Math.min(Math.max(Number(options.station) || 0, 0), 2)
     const progress = progressStore.readProgress()
     if (stationIndex !== progress.completed || !progressStore.canUpload(progress, stationIndex)) {
-      wx.showToast({ title: '请先完成动作计时', icon: 'none' })
-      setTimeout(() => wx.navigateBack({ delta: 2 }), 900)
+      wx.showToast({ title: '请先扫码打卡', icon: 'none' })
+      // The scanner replaces itself with this page, so one step returns to the route.
+      setTimeout(() => wx.navigateBack({ delta: 1 }), 900)
       return
     }
     this.setData({ stationIndex, station: stations[stationIndex] })
@@ -78,7 +79,7 @@ Page({
       const progress = progressStore.completeStation(this.data.stationIndex, savedPath)
       if (progress.completed <= this.data.stationIndex) {
         this.setData({ submitting: false })
-        wx.showToast({ title: '保存状态失效，请重新完成动作', icon: 'none' })
+        wx.showToast({ title: '保存状态失效，请重新扫码打卡', icon: 'none' })
         return
       }
       this.setData({

@@ -21,7 +21,7 @@ const tests = []
 const test = (label, callback) => tests.push({ label, callback })
 function activity(overrides = {}) {
   return {
-    enabled: true, mode: 'production', environmentId: 'prod-env', appId: 'wx44b333d3d8cef506',
+    enabled: true, mode: 'production', environmentId: 'prod-env', appId: 'wx9d16b2e04851fc36',
     activityId: 'walk-2026', title: '健康漫步', routeVersion: 'route-01-v1',
     requiredPoints: ['001', '002', '003'], startPointCode: '000', finishPointCode: '999',
     startsAt: START, endsAt: START + 86400000 * 3, reportingClosesAt: START + 86400000 * 4,
@@ -36,7 +36,7 @@ function payload(overrides = {}) {
   }
 }
 function identity(overrides = {}) {
-  return { OPENID: 'participant', APPID: 'wx44b333d3d8cef506', ENV: 'prod-env', SOURCE: 'wx_client', ...overrides }
+  return { OPENID: 'participant', APPID: 'wx9d16b2e04851fc36', ENV: 'prod-env', SOURCE: 'wx_client', ...overrides }
 }
 function stored(openId = 'participant', changes = {}, config = activity()) {
   return { ...prepareRecord(payload({
@@ -93,13 +93,12 @@ function device(version = 'release', existingStorage = {}) {
 function finishedProgress(context) {
   const value = {
     completed: 3, startedAt: START + 60000, completedAt: NOW - 60000,
-    reportingContext: context, checkins: {}, actions: {}, photos: {},
+    reportingContext: context, checkins: {}, photos: {},
     startCheckIn: { ...QR_TAGS[0], assurance: 'LOCAL_QR_MATCH' },
     finishCheckIn: { ...QR_TAGS[4], assurance: 'LOCAL_QR_MATCH' }
   }
   for (const point of QR_TAGS.filter((item) => item.checkpointType === 'station')) {
     value.checkins[point.stationIndex] = { ...point, assurance: 'LOCAL_QR_MATCH' }
-    value.actions[point.stationIndex] = { startedAt: START, completedAt: NOW - 120000 }
     value.photos[point.stationIndex] = 'private-photo.jpg'
   }
   return value
@@ -128,7 +127,7 @@ test('test environment permits DevTools only with a trusted account and test bui
   const config = activity({ mode: 'test', environmentId: 'test-env', excludedOpenIds: [] })
   const context = identity({ ENV: 'test-env', SOURCE: 'wx_devtools' })
   const result = prepareRecord(payload({ clientEnvVersion: 'trial' }), context, config, NOW)
-  assert.equal(result.collection, 'finishers_test')
+  assert.equal(result.collection, 'finishers')
   assert.equal(prepareRecord(payload(), context, config, NOW).reasonCode, 'BUILD_NOT_ALLOWED')
   assert.equal(prepareRecord(payload({ clientEnvVersion: 'develop' }), { ...context, ENV: 'local' }, config, NOW).ok, false)
 })
@@ -277,7 +276,7 @@ test('bundled settings enable test and production reporting independently', asyn
     state.progress = finishedProgress(context)
     await state.client.report(state.progress)
     assert.equal(state.calls.length, 1)
-    assert.equal(state.calls[0].config.env, 'cloudbase-d2gd1ocuha5342ad6')
+    assert.equal(state.calls[0].config.env, 'cloud1-d1g886bht0f7cbf69')
   }
   const state = device('release')
   state.settings = clone(settings)
@@ -287,10 +286,10 @@ test('bundled settings enable test and production reporting independently', asyn
     return
   }
   state.progress = finishedProgress(context)
-  assert.equal(context.envId, 'health-run-d1gj2x9lm0e9ca17b')
+  assert.equal(context.envId, 'shnu-health-run-20261021-dc2d3ff')
   await state.client.report(state.progress)
   assert.equal(state.calls.length, 1)
-  assert.equal(state.calls[0].config.env, 'health-run-d1gj2x9lm0e9ca17b')
+  assert.equal(state.calls[0].config.env, 'shnu-health-run-20261021-dc2d3ff')
 })
 test('development template matches bundled client and accepts only its test environment', () => {
   const config = require('../cloudfunctions/submitCompletion/activity.example.json')
@@ -302,7 +301,7 @@ test('development template matches bundled client and accepts only its test envi
   assert.equal(config.routeVersion, settings.targets.test.routeVersion)
   const result = prepareRecord(payload({ activityId: config.activityId, routeVersion: config.routeVersion, clientEnvVersion: 'trial' }),
     identity({ ENV: config.environmentId }), config, NOW)
-  assert.equal(result.collection, 'finishers_test')
+  assert.equal(result.collection, 'finishers')
   assert.equal(result.ok, true)
   assert.equal(prepareRecord(payload({ activityId: config.activityId, routeVersion: config.routeVersion, clientEnvVersion: 'trial' }),
     identity({ ENV: settings.targets.production.envId }), config, NOW).reasonCode, 'ENVIRONMENT_NOT_ALLOWED')
@@ -314,11 +313,11 @@ test('develop/trial route to test and release routes to production', () => {
   }
   assert.equal(device('unknown').client.captureContext(), null)
 })
-test('old certificates and incomplete task/action/photo evidence never enqueue', async () => {
+test('old certificates and incomplete task/photo evidence never enqueue', async () => {
   const state = device()
   for (const mutate of [
     (p) => { p.reportingContext = null }, (p) => { p.completed = 2 },
-    (p) => { p.finishCheckIn = null }, (p) => { delete p.actions[1] },
+    (p) => { p.finishCheckIn = null }, (p) => { delete p.checkins[1] },
     (p) => { delete p.photos[2] }, (p) => { p.checkins[0].qrId = 'wrong' }
   ]) {
     const value = clone(state.progress)
@@ -707,8 +706,8 @@ test('current route activity identifiers stay fixed across deployments', () => {
   const template = require('../cloudfunctions/submitCompletion/activity.example.json')
   assert.equal(route.ROUTE_ID, 'route-20261011')
   assert.equal(route.ROUTE_VERSION, 'route-20261011-v1')
-  assert.equal(settings.targets.test.activityId, 'health-run-test-20261011')
+  assert.equal(settings.targets.test.activityId, 'health-run-2026-event02')
   assert.equal(settings.targets.test.routeVersion, 'route-20261011-v1')
-  assert.equal(template.activityId, 'health-run-test-20261011')
+  assert.equal(template.activityId, 'health-run-2026-event02')
   assert.equal(template.routeVersion, 'route-20261011-v1')
 })

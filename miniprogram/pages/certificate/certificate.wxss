@@ -3,13 +3,13 @@
 .certificate-top { position: relative; overflow: hidden; min-height: 260rpx; padding: 38rpx 36rpx; color: #fff; background: var(--orange); }
 .certificate-code { position: relative; z-index: 2; display: block; color: var(--yellow); font-size: 17rpx; }
 .certificate-title { position: relative; z-index: 2; display: block; margin-top: 30rpx; font-size: 34rpx; font-weight: 800; }
-.certificate-subtitle { position: relative; z-index: 2; display: block; margin-top: 9rpx; color: #fff0e4; font-size: 19rpx; }
+.certificate-subtitle { position: relative; z-index: 2; display: block; margin-top: 9rpx; color: #dff5fa; font-size: 19rpx; }
 .complete-seal { position: absolute; z-index: 2; top: 85rpx; right: 40rpx; width: 100rpx; height: 100rpx; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--orange); background: #fff; font-size: 53rpx; font-weight: 700; }
 .decor { position: absolute; border-radius: 50%; background: rgba(255,211,78,.2); }
 .decor-one { left: -90rpx; bottom: -80rpx; width: 270rpx; height: 180rpx; }.decor-two { right: -20rpx; top: -120rpx; width: 270rpx; height: 220rpx; }
 .certificate-body { padding: 42rpx 36rpx 27rpx; text-align: center; }
 .certificate-id { color: var(--orange); font-size: 19rpx; }
-.certificate-participant { display: block; color: var(--indigo); font-size: 17rpx; line-height: 1.6; overflow-wrap: anywhere; }
+.certificate-participant { display: block; color: var(--deep); font-size: 17rpx; line-height: 1.6; overflow-wrap: anywhere; }
 .certificate-owner { display: block; margin-top: 12rpx; font-size: 21rpx; font-weight: 700; }
 .score { margin: 34rpx 0; }
 .score text { display: block; }

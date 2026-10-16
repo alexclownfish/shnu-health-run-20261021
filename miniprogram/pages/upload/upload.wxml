@@ -1,8 +1,8 @@
 <view class="page upload-page with-fixed-action">
   <view class="upload-intro">
-    <text class="eyebrow">ACTION PROOF / 记录当下</text>
-    <text class="upload-title">完成动作，并拍一张照片</text>
-    <text class="upload-copy">支持单人自拍，也可以邀请同伴一起入镜。</text>
+    <text class="eyebrow">CHECK-IN PHOTO / 记录当下</text>
+    <text class="upload-title">拍一张打卡照片</text>
+    <text class="upload-copy">扫码成功后即可拍照上传，支持单人自拍，也可以邀请同伴一起入镜。</text>
   </view>
 
   <view class="photo-stage {{photoPath ? 'has-photo' : ''}}" bindtap="choosePhoto">
@@ -25,7 +25,7 @@
     <text class="section-side">{{station.id}} / 3</text>
   </view>
   <view class="photo-tips">
-    <view class="card"><text class="tip-symbol">⌗</text><text>动作清晰</text><text>人物完整</text></view>
+    <view class="card"><text class="tip-symbol">⌗</text><text>画面清晰</text><text>人物完整</text></view>
     <view class="card"><text class="tip-symbol">♙</text><text>可邀请</text><text>同伴合照</text></view>
     <view class="card"><text class="tip-symbol">◉</text><text>避开工牌</text><text>敏感信息</text></view>
   </view>
@@ -36,7 +36,7 @@
   </view>
 
   <view class="fixed-action">
-    <button class="primary-button" loading="{{submitting}}" disabled="{{!photoPath || !privacyAccepted || submitting}}" bindtap="submitPoint"><text>{{submitting ? '保存中...' : '保存并完成点位'}}</text><text class="arrow">↥</text></button>
+    <button class="primary-button" loading="{{submitting}}" disabled="{{!photoPath || !privacyAccepted || submitting}}" bindtap="submitPoint"><text>{{submitting ? '保存中...' : '保存照片并完成点位'}}</text><text class="arrow">↥</text></button>
   </view>
 
   <view wx:if="{{successVisible}}" class="sheet-mask">

@@ -53,7 +53,7 @@ function describeError(error, environment = process.env) {
   } else if (/INVALID_ENV|env.*(not.*found|not.*exist|invalid)|环境.*(不存在|无效)/i.test(signals)) {
     advice = '无法访问指定云环境，请核对环境 ID、账号归属及环境状态。也可从云控制台导出 JSON 后使用 --input 本地转换，无需管理员密钥。'
   } else if (/collection.*(not.*found|not.*exist)|集合.*不存在/i.test(signals)) {
-    advice = '目标集合不存在，请确认开发环境中已建立 finishers_test。'
+    advice = '目标集合不存在，请确认目标云环境中已建立 finishers。'
   } else if (/ETIMEDOUT|ECONNRESET|ECONNREFUSED|ENOTFOUND|EAI_AGAIN|timeout|network|socket|certificate/i.test(signals)) {
     advice = '网络连接失败，请检查网络、代理和证书后重试。'
   } else if (/UNSTABLE_EXPORT_CURSOR|INVALID_EXPORT_PAGE/.test(signals)) {
@@ -117,7 +117,7 @@ async function main(values = process.argv.slice(2)) {
     result = await atStage('读取云数据库', () => collectRows(async ({ activityId, cursor, cutoff: until, limit }) => {
       const filter = { activityId, receivedAt: db.command.lte(until) }
       if (cursor) filter._id = db.command.gt(cursor)
-      const response = await db.collection(config.mode === 'production' ? 'finishers' : 'finishers_test')
+      const response = await db.collection('finishers')
         .where(filter).orderBy('_id', 'asc').limit(limit).get()
       return response.data
     }, config, cutoff))

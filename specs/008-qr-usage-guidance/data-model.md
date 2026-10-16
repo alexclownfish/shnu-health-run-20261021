@@ -2,7 +2,7 @@
 
 | 数据 | 约定 |
 | --- | --- |
-| QR_USAGE_HINT | 请在微信小程序「绿色康跑」内点击“扫码打卡”使用。 |
+| QR_USAGE_HINT | 请在微信小程序「悠湃体育」内点击“扫码打卡”使用。 |
 | legacyPayload | 原HRQ1单行数据，由原pointCode、qrId、qrToken计算 |
 | payload | QR_USAGE_HINT + LF + legacyPayload，作为新版打印原文 |
 | pointCode / qrId / qrToken | 五项原值不变 |

@@ -61,7 +61,6 @@ function createReporter(options = {}) {
     if (!points.every((item) => {
       const checkin = value.checkins && value.checkins[String(item.stationIndex)]
       return checkin && checkin.pointCode === item.pointCode && checkin.qrId === item.qrId &&
-        value.actions && value.actions[String(item.stationIndex)] && value.actions[String(item.stationIndex)].completedAt &&
         value.photos && value.photos[String(item.stationIndex)]
     })) return false
     const key = JSON.stringify([bound.envId, bound.activityId, bound.routeVersion, value.startedAt])

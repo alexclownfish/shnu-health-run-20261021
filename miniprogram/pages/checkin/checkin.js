@@ -43,7 +43,7 @@ Page({
   onShow() {
     this.pageActive = true
     if (this.accepted) {
-      this.scheduleActionNavigation()
+      this.scheduleNavigation()
       return
     }
     if (this.needsReset && !this.accepted) {
@@ -250,17 +250,17 @@ Page({
         ? '计时已开始，即将返回路线页。'
         : result.checkpointType === 'finish'
           ? '计时已结束，即将生成完赛凭证。'
-          : '点位二维码一致，即将进入动作任务。',
+          : '点位二维码一致，即将进入拍照上传。',
       showPrimary: false,
       showRetry: false,
       showRoute: false,
       success: true
     })
     if (typeof wx.vibrateShort === 'function') wx.vibrateShort({ type: 'medium' })
-    this.scheduleActionNavigation(reportPromise)
+    this.scheduleNavigation(reportPromise)
  },
 
-  scheduleActionNavigation(afterReport = Promise.resolve()) {
+  scheduleNavigation(afterReport = Promise.resolve()) {
    this.stopPending()
     Promise.resolve(afterReport).catch(() => {}).then(() => {
       if (!this.pageActive || !this.accepted) return
@@ -272,7 +272,8 @@ Page({
         } else if (this.acceptedCheckpointType === 'finish') {
           wx.redirectTo({ url: '/pages/certificate/certificate' })
         } else {
-          wx.redirectTo({ url: `/pages/action/action?station=${this.acceptedStationIndex}` })
+          // 点位二维码核验成功后直接进入拍照页；动作图示和动作等待计时已取消。
+          wx.redirectTo({ url: `/pages/upload/upload?station=${this.acceptedStationIndex}` })
         }
       }, 700)
     })

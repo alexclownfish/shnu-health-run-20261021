@@ -17,7 +17,7 @@
 
 - [x] T005 [P] Recolor route hero, weather, map hint, station states, and fixed CTA in `miniprogram/pages/route/route.wxss`
 - [x] T006 [P] Recolor scan waiting, scanning, success, error, and assurance states in `miniprogram/pages/checkin/checkin.wxss`
-- [x] T007 [P] Recolor action header, motion illustration, timer, safety note, and disabled CTA in `miniprogram/pages/action/action.wxss`
+- [x] T007 [P] Recolor direct QR-to-photo transition and disabled upload CTA in `miniprogram/pages/upload/upload.wxss`
 - [x] T008 [P] Recolor photo stage, camera prompt, privacy checkbox, success sheet, and progress bar in `miniprogram/pages/upload/upload.wxss`
 - [x] T009 Review the core journey for accidental business markup or event-handler changes in the four page WXML files
 
@@ -37,7 +37,7 @@
 
 - [x] T016 Run the bundled Node test runner and confirm all existing business-flow tests remain passing
 - [ ] T017 Verify route states `0/3`, `1/3`, and `3/3` in the Developer Tools preview
-- [ ] T018 Verify check-in success, wrong-point error, scan cancellation, action disabled/completed, and photo success states
+- [ ] T018 Verify check-in success, wrong-point error, scan cancellation, photo selection and upload success states
 - [ ] T019 Verify records, profile, certificate preview, and saved certificate image use the same semantic palette
 - [ ] T020 Check narrow and normal phone widths for clipping, overlap, safe-area issues, and contrast failures
 - [ ] T021 Record final screenshots and update a theme conformance review before release
@@ -52,5 +52,5 @@
 
 ## Out of Scope
 
-- NFC, QR validation, local storage, route data, action timing, photo persistence, backend, cloud service, and user authorization behavior.
+- NFC, QR validation, local storage, route data, photo persistence, backend, cloud service, and user authorization behavior.
 - New illustrations, new screens, new animations, dark mode, user-selectable themes, and a runtime theme switch.

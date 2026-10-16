@@ -43,7 +43,7 @@ Independent test: 网络失败、响应丢失、切换环境与历史记录无�
 
 - [X] T013 完成部署/权限/索引/导出操作说明于 specs/005-finisher-list-export/deployment.md、quickstart.md、README.md。
 - [X] T014 本地所有测试与差异检查，通过后更新本 tasks.md。
-- [ ] T015 验证开发环境客户端权限、真机补报与 Excel 云读取；用户已通过体验版测试确认摘要写入 finishers_test，剩余项仍待实际验收。
+- [ ] T015 验证开发环境客户端权限、真机补报与 Excel 云读取；用户已通过体验版测试确认摘要写入 finishers，剩余项仍待实际验收。
 - [X] T016 按本轮要求增加 test/production 独立启用开关，启用开发/体验，验证正式版不能初始化或上报。
 - [X] T017 填好开发测试窗口与补交期限，补充 development-setup.md 完整 JSON、部署和重复测试步骤。
 - [ ] T018 正式活动参数、排除账号、正式云部署与三平台验收（用户明确延后）。
@@ -63,10 +63,10 @@ MVP 包括三个故事；T015 是本轮开发云部署验收，不能以模拟�
 
 ## Environment Configuration
 
-用户提供开发环境 cloudbase-d2gd1ocuha5342ad6、正式环境 health-run-d1gj2x9lm0e9ca17b，已填写 miniprogram/utils/config.js 与对应 ACTIVITY_CONFIG 模板。
-本轮仅开启开发/体验版，开发活动窗口为 2026-10-09 00:00 至 2026-11-09 00:00，补交至 2026-11-10 00:00（Asia/Shanghai）；正式目标 enabled=false。正式参数后续确定。
+用户提供开发环境 cloud1-d1g886bht0f7cbf69、正式环境 shnu-health-run-20261021-dc2d3ff，已填写 miniprogram/utils/config.js 与对应 ACTIVITY_CONFIG 模板。
+测试与正式目标均已配置，活动窗口为 2026-10-09 00:00 至 2026-11-09 00:00，补交至 2026-11-10 00:00（Asia/Shanghai）；正式云端部署和发布验收仍待执行。
 官方 CLI 的 islogin 检查返回 IDE service port disabled，电脑控制工具返回权限未授予，因此尚未部署云函数或验收 T015；没有管理员凭据可用于直接云访问。未创建集合、修改云权限或触碰正式环境。
 
-后续用户截图确认 finishers_test 已有 trial / test / health-run-test 的云端摘要，代表用户已完成开发部署与一次体验版写入；本代理未直接部署，T015 的权限、补报、导出验收仍未完成。
+新环境配置已写入代码，但本代理未直接部署或验收云函数；T015 的权限、补报、导出验收仍未完成。
 用户电脑导出返回旧版通用错误；修复本地工具后需在用户持有管理员凭据的终端重跑以取得错误码。当前代理执行环境没有凭据，未对真实数据库发起读取或生成正式云数据 Excel。
 用户重跑得到 INVALID_ENV。新增控制台完整 JSON 到 Excel 的本地 shell 路径；其无云 SDK、无凭据转换已经使用合法样本实测，但用户真实控制台文件尚未提供，T015 的实际名单转换仍待操作验证。

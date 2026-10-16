@@ -1,14 +1,14 @@
 # 云函数建立与 Excel 导出操作说明
 
-本地 MVP 已实现；开发、正式两个云环境 ID 已填入配置。当前仅开启开发版/体验版上报，正式目标保持关闭；用户已确认体验版摘要写入测试集合，客户端权限、补报和管理员 Excel 云读取仍需验收。
+本地 MVP 已实现；开发、正式两个云环境 ID 已填入配置。测试版/体验版和正式版分别指向独立云环境；客户端权限、补报和管理员 Excel 云读取仍需验收。
 用户要求先完成开发环境，本轮优先按 [development-setup.md](development-setup.md) 的现成配置和步骤联调。本文的正式环境步骤留待后续。
 需要一个云函数 `submitCompletion`，分别部署到两个独立环境；不需要自己购买服务器或建立小程序管理页。
-使用云开发数据库后，这部分是后端服务；扫码、动作、照片、计时、凭证继续在本机工作。
+使用云开发数据库后，这部分是后端服务；扫码、照片、计时、凭证继续在本机工作。
 
 ## 1. 打开项目并开通云开发
 
-在微信开发者工具中导入本仓库根目录（包含 project.config.json 的 health-run），用有该小程序权限的微信账号登录。
-确认 AppID 为 `wx44b333d3d8cef506`，不是游客 AppID。打开工具的“云开发”，按实际账号提示开通。
+在微信开发者工具中导入本仓库根目录（包含 project.config.json 的悠湃体育项目），用有该小程序权限的微信账号登录。
+确认 AppID 为 `wx9d16b2e04851fc36`，不是游客 AppID。打开工具的“云开发”，按实际账号提示开通。
 资格、环境数量、费用和资源配额以实际控制台为准；本方案不承诺免费。
 
 本项目沿用用户已创建的开发环境和正式环境，无需再建立第三个测试环境；开发环境对应代码中的 test。
@@ -16,12 +16,12 @@
 
 | 环境 | 环境 ID | 使用版本 | 数据集合 |
 | --- | --- | --- | --- |
-| 开发环境（test） | cloudbase-d2gd1ocuha5342ad6 | 开发版 develop、体验版 trial | finishers_test |
-| 正式环境（production） | health-run-d1gj2x9lm0e9ca17b | 正式版 release | finishers |
+| 开发环境（test） | cloud1-d1g886bht0f7cbf69 | 开发版 develop、体验版 trial | finishers |
+| 正式环境（production） | shnu-health-run-20261021-dc2d3ff | 正式版 release | finishers |
 
 ## 2. 建立数据库集合与权限
 
-在测试环境数据库新建 `finishers_test`；正式环境新建 `finishers`。
+在测试环境数据库新建 `finishers`；正式环境新建 `finishers`。
 集合“权限设置”使用自定义规则，禁止小程序客户端直接读取和写入：
 
 ```json
@@ -50,8 +50,8 @@
 ## 4. 配置云函数 ACTIVITY_CONFIG
 
 打开对应环境 submitCompletion 的“配置/环境变量”。新增变量名 `ACTIVITY_CONFIG`，值是完整 JSON 字符串。
-开发环境使用 `cloudfunctions/submitCompletion/activity.example.json`，活动窗口已填写且 enabled=true，可用于当前联调。正式环境 `activity.production.example.json` 仍关闭，活动 ID、时间与排除账号待后续确认。
-这些 JSON 文件供粘贴到 ACTIVITY_CONFIG，上传文件本身不会自动设置云函数环境变量。开发窗口为 2026-10-09 至 2026-11-09，补交至 11-10（Asia/Shanghai）；正式模板时间为 0，不能直接用于有效上报。
+开发环境使用 `cloudfunctions/submitCompletion/activity.example.json`，正式环境使用 `activity.production.example.json`；两份配置均已填写新 AppID、活动编号、环境 ID、活动名称和时间窗口。
+这些 JSON 文件供粘贴到 ACTIVITY_CONFIG，上传文件本身不会自动设置云函数环境变量。开发和正式配置的窗口均为 2026-10-09 至 2026-11-09，补交至 11-10（Asia/Shanghai）。
 保存后按控制台要求使配置生效。两个环境分别配置，不要共用正式 JSON。
 
 本轮开发配置（联调超过窗口时需要更新）：
@@ -60,10 +60,10 @@
 {
   "enabled": true,
   "mode": "test",
-  "environmentId": "cloudbase-d2gd1ocuha5342ad6",
-  "appId": "wx44b333d3d8cef506",
-  "activityId": "health-run-test-20261011",
-  "title": "健康漫步测试活动",
+  "environmentId": "cloud1-d1g886bht0f7cbf69",
+  "appId": "wx9d16b2e04851fc36",
+  "activityId": "health-run-2026-event02",
+  "title": "步履时光·健康同行",
   "routeVersion": "route-20261011-v1",
   "requiredPoints": ["001", "002", "003"],
   "startPointCode": "000",
@@ -79,14 +79,13 @@
 时间必须是毫秒整数，可在开发者工具控制台求值，例如 `Date.parse('2026-10-09T08:00:00+08:00')`。不要填秒、日期字符串或 0。
 startsAt/endsAt 限制手机起止时间；reportingClosesAt 限制服务器接收时间，可设结束后一天补交，具体由活动组织者决定。
 
-正式配置改为：mode=production、实际正式环境 ID、独立正式 activityId（例如 health-run-2026-event01）、正式名称、实际活动时间、开发账号 excludedOpenIds。
-正式 activityId 不要与测试活动相同。保留两份与云端完全一致的电脑配置 `test.local.json`、`production.local.json` 用于导出，`.local.json` 已被 Git 忽略。
+正式配置使用 mode=production、正式环境 ID、health-run-2026-event02、步履时光·健康同行、正式活动时间和开发账号 excludedOpenIds。当前测试和正式环境按用户要求使用同一活动编号，但数据仍由不同云环境隔离。保留两份与云端完全一致的电脑配置 `test.local.json`、`production.local.json` 用于导出，`.local.json` 已被 Git 忽略。
 活动开始后冻结名称、版本、点位和窗口；下一次活动使用新 activityId。路线更改时同步小程序清单与云端配置，不能只改地图后沿用旧版本。
 
 ## 5. 取得开发/测试账号并设置排除名单
 
 先让所有开发人员和用于现场测试的微信账号，在测试环境体验版跑一次完整流程。
-在测试数据库 finishers_test 中查看他们对应记录的 `ownerOpenId`，这是云函数可信微信上下文写入的账号标识。
+在测试数据库 finishers 中查看他们对应记录的 `ownerOpenId`，这是云函数可信微信上下文写入的账号标识。
 同一 AppID 的这些账号用于正式环境排除，将其填入正式 ACTIVITY_CONFIG 的 excludedOpenIds，例如 `["真实开发账号openid", "真实现场测试账号openid"]`。
 没有测试完赛记录时，先核对客户端、时间窗口和函数配置；不需要为查身份增加公开查询接口。
 
@@ -99,7 +98,7 @@ startsAt/endsAt 限制手机起止时间；reportingClosesAt 限制服务器接�
 
 ## 6. 填写小程序配置并启用
 
-`miniprogram/utils/config.js` 的两个环境 ID、活动编号和路线版本已填写，总开关为 true，当前 test.enabled=false、production.enabled=true，正式版上报到正式云环境：
+`miniprogram/utils/config.js` 的两个环境 ID、活动编号和路线版本已填写，总开关和 test/production 两个目标均为 true：
 
 ```js
 completionReporting: {
@@ -108,14 +107,14 @@ completionReporting: {
   targets: {
     test: {
       enabled: true,
-      envId: 'cloudbase-d2gd1ocuha5342ad6',
-      activityId: 'health-run-test-20261011',
+      envId: 'cloud1-d1g886bht0f7cbf69',
+      activityId: 'health-run-2026-event02',
       routeVersion: 'route-20261011-v1'
     },
     production: {
       enabled: true,
-      envId: 'health-run-d1gj2x9lm0e9ca17b',
-      activityId: 'health-run-2026-event01',
+      envId: 'shnu-health-run-20261021-dc2d3ff',
+      activityId: 'health-run-2026-event02',
       routeVersion: 'route-20261011-v1'
     }
   }
@@ -157,7 +156,7 @@ npm test
 
 ## 9. 按需导出 Excel
 
-管理员 SDK 当前得到 INVALID_ENV 时，可优先在已登录云控制台选择集合，导出 JSON（字段项留空），然后执行 `bash tools/export-finishers/export-test.sh "$HOME/Downloads/finishers_test.json"` 本地转换。该脚本无需 npm 或密钥；完整步骤见 [development-setup.md](development-setup.md) 第 5 节。
+管理员 SDK 当前得到 INVALID_ENV 时，可优先在已登录云控制台选择集合，导出 JSON（字段项留空），然后执行 `bash tools/export-finishers/export-test.sh "$HOME/Downloads/finishers.json"` 本地转换。该脚本无需 npm 或密钥；完整步骤见 [development-setup.md](development-setup.md) 第 5 节。
 本地模式支持 --input，不访问云数据库，只转换文件内有效记录，工作簿注明来源；直接 SDK 方案如下。
 
 在仓库根目录，补交窗口结束并至少等待一分钟后执行：

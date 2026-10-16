@@ -12,12 +12,12 @@
 .level-card { margin-top: 20rpx; padding: 25rpx; box-shadow: none; }
 .level-head, .level-foot { display: flex; justify-content: space-between; align-items: center; }
 .level-head text:first-child { color: var(--muted); font-size: 18rpx; }.level-head text:last-child { color: var(--orange); font-size: 20rpx; font-weight: 600; }
-.level-track { overflow: hidden; height: 11rpx; margin: 20rpx 0 13rpx; border-radius: 6rpx; background: #ece8e8; }
+.level-track { overflow: hidden; height: 11rpx; margin: 20rpx 0 13rpx; border-radius: 6rpx; background: #dbeaf0; }
 .level-track view { width: 85%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--yellow)); }
 .level-foot { color: var(--muted); font-size: 16rpx; }
 .badge-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15rpx; }
 .badge-grid > view { text-align: center; }
-.badge { width: 98rpx; height: 98rpx; display: flex; align-items: center; justify-content: center; margin: 0 auto 13rpx; border: 1rpx solid #ead5c7; border-radius: 50%; color: var(--deep); background: var(--peach); font-size: 41rpx; }
+.badge { width: 98rpx; height: 98rpx; display: flex; align-items: center; justify-content: center; margin: 0 auto 13rpx; border: 1rpx solid var(--line); border-radius: 50%; color: var(--deep); background: var(--peach); font-size: 41rpx; }
 .badge.blue { color: var(--deep); background: var(--lavender); }.badge.coral { color: #c44c5e; background: #ffe1e3; }.badge.locked { color: #989094; background: #ebe8e8; }
 .badge.is-locked { opacity: .45; }
 .badge-grid text { font-size: 17rpx; font-weight: 600; }

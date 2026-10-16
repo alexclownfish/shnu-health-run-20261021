@@ -1,17 +1,17 @@
 # 开发环境联调
 
-本轮只启用开发版/体验版。正式版上报开关为 false，不部署或启用正式云环境。
+测试版/体验版使用独立测试环境，正式版使用独立正式环境；两端配置都已写入代码，正式发布前仍需完成云端部署和真机验收。
 客户端与开发活动配置已完成；用户截图曾验证原活动体验版摘要写入开发集合。2026-10-11新路线使用独立开发活动与版本，需重新同步ACTIVITY_CONFIG并完整测试，详见 [新路线联调](../007-route-maintenance/quickstart.md)。管理员Excel云读取、客户端权限与其余真机场景仍需验收。本地控制台文件转换可用，不依赖电脑云环境访问。
 
 ## 当前配置
 
 | 项目 | 当前值 |
 | --- | --- |
-| 开发环境 ID | cloudbase-d2gd1ocuha5342ad6 |
-| 小程序 AppID | wx44b333d3d8cef506 |
+| 开发环境 ID | cloud1-d1g886bht0f7cbf69 |
+| 小程序 AppID | wx9d16b2e04851fc36 |
 | 云函数 | submitCompletion |
-| 集合 | finishers_test |
-| 活动编号 | health-run-test-20261011 |
+| 集合 | finishers |
+| 活动编号 | health-run-2026-event02 |
 | 路线版本 | route-20261011-v1 |
 | 点位 | 起点 000，任务 001/002/003，终点 999 |
 | 测试时间 | 2026-10-09 00:00:00 至 2026-11-09 00:00:00（Asia/Shanghai） |
@@ -22,7 +22,7 @@
 
 ## 1. 建立测试集合
 
-在微信开发者工具“云开发”中选择 cloudbase-d2gd1ocuha5342ad6，进入数据库，新建 finishers_test。
+在微信开发者工具“云开发”中选择 cloud1-d1g886bht0f7cbf69，进入数据库，新建 finishers。
 集合权限选择自定义规则并保存：
 
 ```json
@@ -34,7 +34,7 @@
 
 ## 2. 部署开发云函数
 
-在开发者工具文件树找到 cloudfunctions，选择开发环境 cloudbase-d2gd1ocuha5342ad6。
+在开发者工具文件树找到 cloudfunctions，选择开发环境 cloud1-d1g886bht0f7cbf69。
 右键 submitCompletion，选择“上传并部署：云端安装依赖”，将 index.js、policy.js、service.js、package.json 一起部署。
 函数名称为 submitCompletion，入口 index.main，运行时使用平台支持且兼容 node:crypto 的 Node.js，超时设为 10 秒或更短并验证足够正常写库。
 
@@ -44,7 +44,7 @@
 服务端口可用后，官方 CLI 的开发部署命令为：
 
 ```bash
-/Applications/wechatwebdevtools.app/Contents/MacOS/cli cloud functions deploy --env cloudbase-d2gd1ocuha5342ad6 --names submitCompletion --remote-npm-install --project /Users/yangwenzhe/project/health-run/health-run
+/Applications/wechatwebdevtools.app/Contents/MacOS/cli cloud functions deploy --env cloud1-d1g886bht0f7cbf69 --names submitCompletion --remote-npm-install --project /Users/yangwenzhe/project/shnu-health-run-20261021
 ```
 
 这条命令仅上传开发环境云函数，不发布小程序、不创建集合，也不会自动设置 ACTIVITY_CONFIG。
@@ -61,10 +61,10 @@
 {
   "enabled": true,
   "mode": "test",
-  "environmentId": "cloudbase-d2gd1ocuha5342ad6",
-  "appId": "wx44b333d3d8cef506",
-  "activityId": "health-run-test-20261011",
-  "title": "健康漫步测试活动",
+  "environmentId": "cloud1-d1g886bht0f7cbf69",
+  "appId": "wx9d16b2e04851fc36",
+  "activityId": "health-run-2026-event02",
+  "title": "步履时光·健康同行",
   "routeVersion": "route-20261011-v1",
   "requiredPoints": ["001", "002", "003"],
   "startPointCode": "000",
@@ -80,8 +80,8 @@
 ## 4. 体验版完整流程验收
 
 重新编译本地代码或上传体验版，从新一轮起点开始。旧凭证、启用前已开始的路线没有活动上下文，不会自动补录。
-起点扫码 -> 三个任务点依次扫码、动作、拍照 -> 终点扫码。
-第三个任务点不提交摘要，成功终点才提交；finishers_test 应出现一条对应账号记录，本机凭证继续显示固定起止时间。
+起点扫码 -> 三个任务点依次扫码、拍照上传 -> 终点扫码。
+第三个任务点不提交摘要，成功终点才提交；finishers 应出现一条对应账号记录，本机凭证继续显示固定起止时间。
 打开凭证或重复提交不会增加行数；另一个微信账号完成后才增加另一条人员记录。
 字段包括 ownerOpenId、昵称、activityId、routeVersion、起止时间、durationMs 和 receivedAt；没有照片、头像和二维码 token。
 
@@ -95,14 +95,14 @@
 
 用户已实测电脑云访问返回 INVALID_ENV。换成直接云读取的 shell 或 HTTP 接口仍需处理云环境/身份问题；本轮采用已登录控制台获取文件、本地离线转换，不开放新的网络导出接口。
 
-1. 在云开发控制台选择开发环境 cloudbase-d2gd1ocuha5342ad6 → 数据库 → finishers_test。
+1. 在云开发控制台选择开发环境 cloud1-d1g886bht0f7cbf69 → 数据库 → finishers。
 2. 点击“导出”，格式选 JSON，字段项留空以导出全部字段；不要只导出昵称和时间，缺少 schemaVersion/身份/活动字段的行无法校验。
-3. 下载 JSON 文件，例如保存为 Downloads/finishers_test.json。若取得压缩包，先解压得到 JSON。
+3. 下载 JSON 文件，例如保存为 Downloads/finishers.json。若取得压缩包，先解压得到 JSON。
 4. 在仓库根目录运行以下命令，替换实际下载文件名：
 
 ```bash
 cd /Users/yangwenzhe/project/health-run/health-run
-bash tools/export-finishers/export-test.sh "$HOME/Downloads/finishers_test.json"
+bash tools/export-finishers/export-test.sh "$HOME/Downloads/finishers.json"
 ```
 
 脚本不调用 npm、不要求 SecretId/SecretKey、不访问云端，使用当前电脑已安装的 Node.js 与项目现有 ExcelJS。
@@ -135,7 +135,7 @@ npm 的版本更新通知与导出是否成功无关，排查时不需要升级 
 
 ## 反复测试与排查
 
-每个活动每个账号保留首条记录，重置小程序路线不会覆盖这条时间或昵称。当前活动固定使用 health-run-test-20261011 和 route-20261011-v1；普通重新测试不要修改它们。只有明确要创建独立测试活动时，才由开发者同时修改客户端、云函数 ACTIVITY_CONFIG 和导出配置，并提前记录新值。
+每个活动每个账号保留首条记录，重置小程序路线不会覆盖这条时间或昵称。当前活动固定使用 health-run-2026-event02 和 route-20261011-v1；普通重新测试不要修改它们。只有明确要创建独立测试活动时，才由开发者同时修改客户端、云函数 ACTIVITY_CONFIG 和导出配置，并提前记录新值。
 旧测试数据留在测试环境，不会迁移到正式名单；不要为重复测试清除正式数据或自动重标测试记录。
 
 若无记录，检查函数是否有调用、ACTIVITY_CONFIG 是否生效、集合名称/权限及设备时间。

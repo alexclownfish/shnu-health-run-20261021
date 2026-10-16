@@ -18,7 +18,7 @@
 .reader-error .reader-phone { background: var(--coral); }
 .reader-error .reader-ring { border-color: rgba(241,91,104,.14); animation: none; }
 .reader-idle .reader-ring { opacity: .45; animation: none; }
-.reader-qr { background: #edf1fb; }
+.reader-qr { background: #e5f7fb; }
 .reader-qr .reader-phone { background: var(--primary); }
 .reader-qr .reader-tag { color: var(--ink); background: var(--yellow); }
 .result-copy { padding: 36rpx 4rpx 22rpx; }

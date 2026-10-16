@@ -6,7 +6,7 @@ const vm = require('node:vm')
 
 const root = path.resolve(__dirname, '..')
 const miniRoot = path.join(root, 'miniprogram')
-const pages = ['route', 'checkin', 'action', 'upload', 'certificate', 'records', 'profile']
+const pages = ['route', 'checkin', 'upload', 'certificate', 'records', 'profile']
 const components = ['route-map', 'profile-auth']
 
 function readJson(file) {
@@ -27,7 +27,7 @@ run('project config points to miniprogram root', () => {
   const config = readJson(path.join(root, 'project.config.json'))
   assert.equal(config.miniprogramRoot, 'miniprogram/')
   assert.equal(config.compileType, 'miniprogram')
-  assert.equal(config.appid, 'wx44b333d3d8cef506')
+  assert.equal(config.appid, 'wx9d16b2e04851fc36')
 })
 
 run('app page registry has every page asset', () => {
@@ -87,7 +87,7 @@ run('app and route page initialize with a JS-only mini-program module loader', (
   assert.ok(page && typeof page.onLoad === 'function', 'route page registered')
   page.setData = (value) => Object.assign(page.data, value)
   page.onLoad.call(page)
-  assert.equal(page.data.totalDistance, '1.66')
+  assert.equal(page.data.totalDistance, '3.50')
   assert.equal(page.data.stations.length, 3)
   assert.equal(page.data.started, false)
   assert.equal(page.data.profileVisible, true)
@@ -107,21 +107,12 @@ run('route map and profile authorization components are registered', () => {
   assert.equal(profile.usingComponents['profile-auth'], '/components/profile-auth/profile-auth')
 })
 
-run('native map uses the KMZ route and station marker order', () => {
+run('route map uses the supplied activity diagram', () => {
   const source = fs.readFileSync(path.join(miniRoot, 'components', 'route-map', 'route-map.js'), 'utf8')
   const template = fs.readFileSync(path.join(miniRoot, 'components', 'route-map', 'route-map.wxml'), 'utf8')
-  const route = require(path.join(miniRoot, 'utils', 'route.js'))
-  assert.equal(route.TRACK[0][0], 0, 'KML start index')
-  assert.deepEqual(route.TASK_TRACK_INDEX, [70, 180, 227])
-  assert.deepEqual(route.getTaskMarkers().map((marker) => marker.sourceLabel), ['1', '2', '3'])
-  assert.deepEqual(route.getMapMarkers(0).map((marker) => marker.id), [0, 1, 2, 3, 4])
-  assert.equal(route.TRACK.length, 357, 'full KML geometry')
-  assert.equal(route.getMapPoints().length, 357, 'converted KML geometry')
-  assert.match(source, /getMapPoints/, 'GCJ-02 map points')
-  assert.match(source, /getMapMarkers/, 'native map markers')
-  assert.match(template, /<map/, 'native WeChat map')
-  assert.match(template, /polyline="\{\{polyline\}\}"/, 'KML polyline binding')
-  assert.match(template, /show-location="\{\{false\}\}"/, 'location permission is disabled')
+  assert.match(source, /Component\(/, 'route map component')
+  assert.match(template, /<image/, 'supplied route diagram image')
+  assert.match(template, /shnu-route-map\.jpg/, 'activity route image asset')
 })
 
 run('KMZ segments and exact photo checkpoints survive map conversion', () => {
@@ -145,17 +136,11 @@ run('KMZ segments and exact photo checkpoints survive map conversion', () => {
     assert.ok(Number.isFinite(lat) && lat >= route.BOUNDS.minLat && lat <= route.BOUNDS.maxLat)
     assert.ok(Number.isFinite(lon) && lon >= route.BOUNDS.minLon && lon <= route.BOUNDS.maxLon)
   })
-  let component
-  global.Component = (value) => { component = value }
-  try {
-    require(path.join(miniRoot, 'components', 'route-map', 'route-map.js'))
-    assert.deepEqual(component.data.polyline.map((line) => line.points), segments)
-  } finally {
-    delete global.Component
-  }
+  // The production route component now renders the supplied route diagram image;
+  // the KMZ geometry remains covered by the route data assertions above.
   assert.deepEqual(require(path.join(miniRoot, 'utils', 'stations.js')).map((station) => station.distance),
     ['约 350 m', '约 870 m', '约 1.07 km'])
-  assert.equal(route.TOTAL_DISTANCE_KM.toFixed(2), '1.66')
+  assert.equal(route.TOTAL_DISTANCE_KM.toFixed(2), '3.50')
 })
 
 run('new route progress leaves prior route records intact', () => {
@@ -189,12 +174,12 @@ run('progress state normalizes and caps safely', () => {
   assert.equal(store.normalizeProgress({ completed: -3 }).completed, 0)
   assert.equal(store.normalizeProgress({ completed: 7 }).completed, 3)
   assert.equal(store.normalizeProgress({ completed: '2' }).completed, 2)
-  assert.equal(store.deriveStats({ completed: 3 }).distance, '1.66')
+  assert.equal(store.deriveStats({ completed: 3 }).distance, '3.50')
   assert.equal(store.deriveStats({ completed: 1 }).points, 1)
   assert.equal(store.normalizeProgress({ participantId: 'abc123' }).participantId, 'abc123')
 })
 
-run('strict station workflow rejects every skipped step', () => {
+run('strict station workflow rejects every skipped step and accepts scan plus photo', () => {
   const store = require(path.join(miniRoot, 'utils', 'progress.js'))
   const { QR_TAGS } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
   const storage = {}
@@ -208,29 +193,18 @@ run('strict station workflow rejects every skipped step', () => {
   assert.equal(start.startedAt, now)
   assert.equal(store.startCheckIn({ qrId: 'QR-START-A', pointCode: '000', assurance: 'LOCAL_QR_MATCH', observedAt: now + 1000 }).startedAt, now)
   store.checkInStation(1)
-  store.startAction(0)
   store.completeStation(0, 'photo-a.jpg')
   assert.equal(store.readProgress().completed, 0)
   store.checkInStation(0, 'qr-code', { ...QR_TAGS[1], assurance: 'LOCAL_QR_MATCH', observedAt: now })
-  store.completeStation(0, 'photo-a.jpg')
-  assert.equal(store.readProgress().completed, 0)
-  store.startAction(0)
-  store.completeStation(0, 'photo-a.jpg')
-  assert.equal(store.readProgress().completed, 0)
-  store.completeAction(0)
   store.completeStation(0, '')
   assert.equal(store.readProgress().completed, 0)
   store.completeStation(0, 'photo-a.jpg')
   assert.equal(store.readProgress().completed, 1)
 
   store.checkInStation(1, 'qr-code', { ...QR_TAGS[2], assurance: 'LOCAL_QR_MATCH', observedAt: now })
-  store.startAction(1)
-  store.completeAction(1)
   store.completeStation(1, 'photo-b.jpg')
   assert.equal(store.readProgress().completed, 2)
   store.checkInStation(2, 'qr-code', { ...QR_TAGS[3], assurance: 'LOCAL_QR_MATCH', observedAt: now })
-  store.startAction(2)
-  store.completeAction(2)
   store.completeStation(2, 'photo-c.jpg')
   assert.equal(store.readProgress().completed, 3)
   assert.equal(store.readProgress().completedAt, 0)
@@ -276,7 +250,7 @@ run('current checkpoint transitions from start to stations to finish', () => {
   assert.equal(store.getCurrentCheckpoint(store.readProgress()), null)
 })
 
-run('expired check-ins cannot start an action', () => {
+run('expired check-ins cannot upload a point photo', () => {
   const store = require(path.join(miniRoot, 'utils', 'progress.js'))
   assert.equal(store.hasValidCheckIn({ checkins: { 0: { at: Date.now() - 21 * 60 * 1000 } } }, 0), false)
   assert.equal(store.hasValidCheckIn({
@@ -299,7 +273,7 @@ run('production check-in entry is manual and has no local skip', () => {
 
 run('packaged QR inventory is exact, unique, and non-URL', () => {
   const { QR_TAGS, QR_USAGE_HINT, getQrInventoryStatus } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
-  assert.equal(QR_USAGE_HINT, '请在微信小程序「绿色康跑」内点击“扫码打卡”使用。')
+  assert.equal(QR_USAGE_HINT, '请在微信小程序「悠湃体育」内点击“扫码打卡”使用。')
   assert.equal(QR_TAGS.length, 5)
   assert.equal(new Set(QR_TAGS.map((item) => item.qrId)).size, QR_TAGS.length)
   assert.equal(new Set(QR_TAGS.map((item) => item.qrToken)).size, QR_TAGS.length)
@@ -341,7 +315,7 @@ run('QR guidance cannot conceal altered, unknown, disabled, duplicated, or conca
   const valid = QR_TAGS[1]
   const check = (result, qrTags = QR_TAGS) => validation.validateQrResult({ expectedStationIndex: 0, result, qrTags })
   for (const result of [
-    valid.payload.replace('绿色康跑', '其他小程序'),
+    valid.payload.replace('悠湃体育', '其他小程序'),
     `${QR_USAGE_HINT}${valid.legacyPayload}`,
     `${QR_USAGE_HINT}\n\n${valid.legacyPayload}`,
     `${QR_USAGE_HINT}\n${valid.payload}`,
@@ -414,7 +388,6 @@ run('a QR check-in repairs a legacy NFC-only local record', () => {
     startedAt: 1,
     startCheckIn: { at: 1, source: 'qr-code', qrId: 'QR-START-A', pointCode: '000', assurance: 'LOCAL_QR_MATCH' },
     checkins: { 0: { at: 2, source: 'nfc' } },
-    actions: {},
     photos: {},
     history: [],
     routeId: 'route-01'
@@ -506,7 +479,7 @@ run('photo completion reports device-local storage to the user', () => {
   const uploadTemplate = fs.readFileSync(path.join(miniRoot, 'pages', 'upload', 'upload.wxml'), 'utf8')
   assert.match(uploadScript, /照片已保存在当前设备/)
   assert.doesNotMatch(uploadScript, /云端|上传/)
-  assert.match(uploadTemplate, /保存并完成点位/)
+  assert.match(uploadTemplate, /保存照片并完成点位/)
   assert.match(uploadTemplate, /\{\{storageNotice\}\}/)
 })
 
@@ -537,7 +510,7 @@ run('calendar uses real month boundaries and activity dates', () => {
   assert.equal(calendar.cells.length % 7, 0)
 })
 
-run('completion certificate formats local duration without ranking or distance', () => {
+run('completion certificate formats local duration and activity distance without ranking', () => {
   const format = require(path.join(miniRoot, 'utils', 'format.js'))
   assert.equal(format.formatDuration(1000, 3723000), '01:02:02')
   assert.equal(format.formatDuration(0, 3723000), '--')
@@ -554,6 +527,7 @@ run('completion certificate formats local duration without ranking or distance',
   assert.match(certificateScript, /formatDuration\(progress\.startedAt, progress\.completedAt\)/)
   assert.match(certificateScript, /总用时/)
   assert.doesNotMatch(certificateScript, /排名|rankLabel|路程|1\.56|待统计/)
+  assert.match(certificateScript, /deriveStats\(progress\)/)
   assert.match(certificateTemplate, /\{\{completionDuration\}\}/)
   assert.doesNotMatch(certificateTemplate, /排名|rankLabel|路程|1\.56 km/)
   assert.match(certificateTemplate, /完成时间/)
@@ -593,6 +567,7 @@ run('certificate refresh and saved poster use fixed device-local completion time
     page.drawCertificatePoster(context)
     assert.ok(texts.some((text) => text.includes('完成时间') && text.includes('总用时 00:18:42')))
     assert.doesNotMatch(texts.join('\n'), /排名|路程|1\.56|待统计/)
+    assert.ok(texts.some((text) => text.includes('3.50 km')))
     store.readProgress = () => ({ completed: 3, startedAt: 0, completedAt: 1123000 })
     page.refreshCertificate()
     assert.equal(page.data.completionDuration, '--')

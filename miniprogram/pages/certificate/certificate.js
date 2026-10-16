@@ -10,6 +10,7 @@ Page({
     certificateId: '',
     completedTime: '',
     completionDuration: '--',
+    distance: '0.00',
     participantId: '',
     completed: 0,
     certificateReady: false,
@@ -32,12 +33,14 @@ Page({
   refreshCertificate() {
     const progress = progressStore.readProgress()
     const timestamp = progress.completedAt || Date.now()
+    const stats = progressStore.deriveStats(progress)
     this.setData({
       completed: progress.completed,
       certificateReady: progressStore.isFinished(progress),
       certificateId: formatDateCode(timestamp),
       completedTime: formatClock(timestamp),
       completionDuration: formatDuration(progress.startedAt, progress.completedAt),
+      distance: stats.distance,
       participantId: progress.participantId || '',
       ownerName: userStore.readUser().nickName || '微信用户'
     })
@@ -106,14 +109,14 @@ Page({
     const width = 750
     const height = 1100
     context.clearRect(0, 0, width, height)
-    context.fillStyle = '#fff8f0'
+    context.fillStyle = '#f4fbfd'
     context.fillRect(0, 0, width, height)
 
     this.roundRect(context, 36, 36, 678, 1028, 24, '#ffffff')
     context.save()
     this.roundRectPath(context, 36, 36, 678, 270, 24)
     context.clip()
-    context.fillStyle = '#f76b2b'
+    context.fillStyle = '#21b9d2'
     context.fillRect(36, 36, 678, 270)
     context.fillStyle = 'rgba(255,211,78,.2)'
     context.beginPath()
@@ -126,13 +129,13 @@ Page({
 
     context.textBaseline = 'middle'
     context.textAlign = 'left'
-    context.fillStyle = '#ffd34e'
+    context.fillStyle = '#ffd22e'
     context.font = '700 22px monospace'
-    context.fillText('PATCH COMPLETE / RELEASE', 76, 91)
+    context.fillText('步履时光 / 完赛凭证', 76, 91)
     context.fillStyle = '#ffffff'
     context.font = '800 38px sans-serif'
-    context.fillText('码上出发·健康同行', 76, 158)
-    context.fillStyle = '#fff0e4'
+    context.fillText('步履时光·健康同行', 76, 158)
+    context.fillStyle = '#dff5fa'
     context.font = '400 22px sans-serif'
     context.fillText('完成实景健康路线', 76, 208)
 
@@ -140,15 +143,15 @@ Page({
     context.arc(625, 166, 52, 0, Math.PI * 2)
     context.fillStyle = '#ffffff'
     context.fill()
-    context.fillStyle = '#f76b2b'
+    context.fillStyle = '#21b9d2'
     context.font = '800 52px sans-serif'
     context.textAlign = 'center'
     context.fillText('✓', 625, 170)
 
-    context.fillStyle = '#f76b2b'
+    context.fillStyle = '#21b9d2'
     context.font = '700 21px monospace'
-    context.fillText(`PATCH-WALK-${this.data.certificateId}`, 375, 352)
-    context.fillStyle = '#2b2330'
+    context.fillText(`YOU-PAI-${this.data.certificateId}`, 375, 352)
+    context.fillStyle = '#073b67'
     context.font = '700 26px sans-serif'
     const owner = (this.data.ownerName || '微信用户').slice(0, 14)
     context.fillText(`${owner} 的健康完赛凭证`, 375, 400)
@@ -157,36 +160,36 @@ Page({
     context.font = '800 30px sans-serif'
     context.fillText('打卡完成', 375, 552)
 
-    this.roundRect(context, 76, 596, 598, 220, 18, '#e9ebff')
+    this.roundRect(context, 76, 596, 598, 220, 18, '#dff5fa')
     this.data.stations.forEach((station, index) => {
       const y = 638 + index * 64
       context.beginPath()
       context.arc(112, y, 20, 0, Math.PI * 2)
-      context.fillStyle = '#ffd34e'
+      context.fillStyle = '#ffd22e'
       context.fill()
-      context.fillStyle = '#3f4b9f'
+      context.fillStyle = '#0058a5'
       context.font = '700 17px monospace'
       context.textAlign = 'center'
       context.fillText(String(station.id), 112, y + 1)
-      context.fillStyle = '#2b2330'
+      context.fillStyle = '#073b67'
       context.font = '600 20px sans-serif'
       context.textAlign = 'left'
       context.fillText(`${station.title} · ${station.location}`, 148, y)
-      context.fillStyle = '#3f4b9f'
+      context.fillStyle = '#0058a5'
       context.font = '700 17px sans-serif'
       context.textAlign = 'right'
       context.fillText('完成', 638, y)
     })
 
     context.textAlign = 'center'
-    context.fillStyle = '#887983'
+    context.fillStyle = '#5c7890'
     context.font = '400 19px sans-serif'
-    context.fillText('回到起点 · 能量已释放', 375, 850)
-    context.fillStyle = '#3f4b9f'
+    context.fillText(`${this.data.distance} km · 起终点计时完成 · 能量已释放`, 375, 850)
+    context.fillStyle = '#0058a5'
     context.font = '600 18px sans-serif'
     context.fillText(`完成时间 ${this.data.completedTime}   ·   总用时 ${this.data.completionDuration}`, 375, 899)
 
-    context.strokeStyle = '#f0d9c8'
+    context.strokeStyle = '#c8e8f0'
     context.lineWidth = 1
     context.beginPath()
     context.moveTo(76, 978)
@@ -250,12 +253,12 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '我完成了“码上出发·健康同行”活动，3/3 点位全部打卡！',
+      title: '我完成了“步履时光·健康同行”活动，3/3 点位全部打卡！',
       path: '/pages/route/route'
     }
   },
 
   onShareTimeline() {
-    return { title: '码上出发·健康同行' }
+    return { title: '步履时光·健康同行' }
   }
 })

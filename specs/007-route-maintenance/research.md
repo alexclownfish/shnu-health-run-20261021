@@ -10,15 +10,15 @@
 
 ## Decision 2: 轨迹与点位不是一份配置
 
-**Evidence**: route.js 内置 243 个点；TASK_TRACK_INDEX 为 [135,151,159]；首末点为起终点。stations.js 使用原参考标注 0/3/4，名称和动作不包含独立地理坐标。route.js 的 callout 和 getTaskMarkers 也独立写有 0/3/4。
+**Evidence**: route.js 内置 243 个点；TASK_TRACK_INDEX 为 [135,151,159]；首末点为起终点。stations.js 使用原参考标注 0/3/4，名称和照片点位不包含独立地理坐标。route.js 的 callout 和 getTaskMarkers 也独立写有 0/3/4。
 **Decision**: 同时维护几何索引、点位文字和二维码身份，不能只改 stations.js。
 **Rationale**: 修改名称不会移动 marker；修改 marker 不会改变二维码。
 **Alternatives considered**: 集中配置更适合长期维护，但本轮仅说明，不实施结构改造。
 
 ## Decision 3: 距离为预设值
 
-**Evidence**: TASK_DISTANCE_KM = [0.83,0.92,1.02]，TOTAL_DISTANCE_KM = 1.56；stations.js 有距离文字；route.wxml 活动标题也写死 1.56 公里。
-**Decision**: 新轨迹需重新核定累计距离并同步所有展示和统计来源。
+**Evidence**: TASK_DISTANCE_KM = [0.35484,0.865,1.06608]；源轨迹 Distance 元数据为 1.659015 公里，活动对外总里程通过 source.activityDistanceMeters 配置为 3.50 公里；stations.js 有距离文字，首页、记录页和完赛凭证读取共享总里程。
+**Decision**: 保留源轨迹和任务点顺序，活动总里程单独配置并同步所有参加者展示和统计来源。
 **Rationale**: 更新轨迹数组不会自动重算距离。BOUNDS/REFERENCE_FRAME 是旧像素投影参数，不参与当前原生地图和 H5 Canvas 的定位；相关导出和测试仍需检查，不把它们误认为地图经纬度设置。
 
 ## Decision 4: 当前固定三个任务点

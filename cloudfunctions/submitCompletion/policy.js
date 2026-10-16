@@ -70,7 +70,8 @@ function prepareRecord(payload, context, config, now = Date.now()) {
   const id = recordId(config.activityId, context.OPENID)
   return {
     ok: true,
-    collection: config.mode === 'production' ? 'finishers' : 'finishers_test',
+    // Both environments use the same collection name in the new app.
+    collection: 'finishers',
     record: {
       _id: id,
       schemaVersion: 1,

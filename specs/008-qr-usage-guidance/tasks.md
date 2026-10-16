@@ -24,7 +24,7 @@
 
 - [x] T006 [US2] 先在tests/run-tests.js复现带提示格式不支持，覆盖新旧码、CRLF及严格格式边界。
 - [x] T007 [US2] 更新miniprogram/utils/qr-validation.js，只移除完整固定提示，再精确匹配legacyPayload。
-- [x] T008 [US2] 验证tests/run-tests.js的页面生命周期、原计时，以及tests/completion-tests.js的完赛上报不受影响。
+- [x] T008 [US2] 验证tests/run-tests.js的页面生命周期、起终点计时，以及tests/completion-tests.js的完赛上报不受影响。
 
 ## Phase 5: Polish
 
@@ -46,5 +46,5 @@ T001→T002；T006在修改解析前复现。T003→T004→T005；T003→T007→
 - npm test：小程序34项、上报/导出45项、实际图片及生成器2项，共81项通过。
 - 五张交付PNG和临时重新生成的五张PNG均独立解码正确；UTF-8提示、换行、五项原身份与配套文本一致。任务点1图片视觉核查黑白码区和完整白边。
 - 五个预期点位与五个输入点位在新LF、新CRLF和旧单行三种格式下全部通过匹配/拒绝检查；错误提示、未知token、禁用、重复及拼接输入拒绝。
-- 图片和UTF-8原文打包为exports/绿色康跑-打卡二维码.zip，中文文件名已核对。exports为本地交付目录，生成的原文件位于assets/qr-checkpoints/。
+- 图片和UTF-8原文打包为exports/悠湃体育-打卡二维码.zip，中文文件名已核对。exports为本地交付目录，生成的原文件位于assets/qr-checkpoints/。
 - JavaScript语法及git diff --check通过；未部署云函数、未上传体验版。真机现场读码和各外部扫码软件的展示仍待组织者验收。

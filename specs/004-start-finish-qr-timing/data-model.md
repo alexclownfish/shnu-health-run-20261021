@@ -12,7 +12,7 @@ QR ID、token、version、enabled、完整 payload 沿用 HRQ1 协议。全清�
 
 ## Progress
 
-- `completed`: 已完成动作和照片的任务点数量，0-3。
+- `completed`: 已完成照片上传的任务点数量，0-3。
 - `startedAt`: 起点成功时间，未开始为 0。
 - `completedAt`: 终点成功时间，未完赛为 0。
 - `startCheckIn` / `finishCheckIn`: null 或 `{ at, source: 'qr-code', qrId, pointCode, assurance: 'LOCAL_QR_MATCH' }`。

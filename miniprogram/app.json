@@ -2,22 +2,21 @@
   "pages": [
     "pages/route/route",
     "pages/checkin/checkin",
-    "pages/action/action",
     "pages/upload/upload",
     "pages/certificate/certificate",
     "pages/records/records",
     "pages/profile/profile"
   ],
   "window": {
-    "navigationBarTitleText": "轻跑",
-    "navigationBarBackgroundColor": "#FFF8F0",
+    "navigationBarTitleText": "步履时光·健康同行",
+    "navigationBarBackgroundColor": "#F4FBFD",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#FFF8F0",
+    "backgroundColor": "#F4FBFD",
     "backgroundTextStyle": "dark"
   },
   "tabBar": {
-    "color": "#887983",
-    "selectedColor": "#5664C2",
+    "color": "#5C7890",
+    "selectedColor": "#0058A5",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "position": "bottom",

@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#f4f7f2" />
-    <title>轻跑 - NFC 健康漫步</title>
+    <meta name="theme-color" content="#f4fbfd" />
+    <title>步履时光·健康同行</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <main class="stage">
-      <section class="phone" aria-label="轻跑健康打卡小程序原型">
+      <section class="phone" aria-label="步履时光·健康同行 H5 原型">
         <div class="phone-status" aria-hidden="true">
           <span id="statusTime">12:42</span>
           <div class="status-icons">
@@ -21,8 +21,8 @@
           <section class="screen is-active" data-screen="route" aria-label="活动路线">
             <header class="app-header">
               <div>
-                <p class="eyebrow">PATCHWALK / 轻跑计划</p>
-                <h1>午间漫步</h1>
+                <p class="eyebrow">上海师大 · 教职工健步走</p>
+                <h1>步履时光·健康同行</h1>
               </div>
               <button class="icon-button avatar-button" data-action="profile" aria-label="打开个人中心" title="个人中心">
                 <i data-lucide="user-round"></i>
@@ -33,17 +33,17 @@
               <section class="weather-strip">
                 <div class="weather-icon"><i data-lucide="sun"></i></div>
                 <div>
-                  <strong>适合轻运动</strong>
-                  <span>多云 · 26°C · 微风</span>
+                    <strong>一起走出好状态</strong>
+                    <span>上海师范大学 · 教职工专场</span>
                 </div>
                 <div class="weather-score"><b>82</b><span>状态分</span></div>
               </section>
 
               <section class="challenge-banner">
                 <div class="banner-copy">
-                  <span class="mono-label">TODAY / ROUTE 01</span>
-                  <h2>1 公里闭环健康漫步</h2>
-                  <p>穿过园区绿道，完成 3 次身体唤醒</p>
+                  <span class="mono-label">SHNU / WALK CHALLENGE</span>
+                  <h2>步履时光·健康同行</h2>
+                  <p>上海师范大学教职工趣味挑战赛 · 3.50 km</p>
                 </div>
                 <div class="time-badge"><b>15–20</b><span>分钟</span></div>
                 <div class="banner-grid" aria-hidden="true"></div>
@@ -54,35 +54,28 @@
                   <div><span class="section-kicker">今日路线</span><h3 id="routeProgressTitle">准备出发</h3></div>
                   <span class="progress-count" id="progressCount">0 / 3 点位</span>
                 </div>
-                <div class="route-map" aria-label="健康漫步路线地图">
-                  <svg viewBox="0 0 340 245" role="img" aria-label="园区路线地图，包含三个健康点位">
-                    <path class="map-river" d="M-18 183C57 122 91 190 147 145c49-40 49-107 120-106 47 1 71 33 99 15v91c-54 13-74-23-119-12-61 15-65 73-130 76-53 2-88-32-135 17z" />
-                    <path class="map-path" d="M17 40c59 8 84 22 124 12 45-12 64-36 121-20 31 9 54 31 74 60M29 207c38-40 72-44 103-21 42 31 87 38 128 5 22-18 42-20 73-15M67 6c0 56-14 91 9 134m145-138c-6 52 7 90 47 135" />
-                    <path class="route-under" d="M53 165L34 124 78 85l62 10 29-45 52 24-5 54 78 39-35 47-79-20-52 24z" />
-                    <path class="route-line" d="M53 165L34 124 78 85l62 10 29-45 52 24-5 54 78 39-35 47-79-20-52 24z" />
-                    <g class="station-marker" data-map-point="0" transform="translate(78 85)">
-                      <circle r="18"></circle><text y="5">1</text>
-                    </g>
-                    <g class="station-marker" data-map-point="1" transform="translate(216 128)">
-                      <circle r="18"></circle><text y="5">2</text>
-                    </g>
-                    <g class="station-marker" data-map-point="2" transform="translate(294 167)">
-                      <circle r="18"></circle><text y="5">3</text>
-                    </g>
-                    <g class="start-marker" transform="translate(53 165)">
-                      <circle r="16"></circle><text y="5">S</text>
-                    </g>
-                    <text class="map-label" x="18" y="26">公司大楼</text>
-                    <text class="map-label" x="245" y="229">溪畔绿道</text>
-                  </svg>
-                  <div class="map-compass"><i data-lucide="navigation-2"></i></div>
+                <div class="route-map" aria-label="上海师范大学校区健步走路线图">
+                  <img class="route-map-image" src="./assets/shnu-route-map.png" alt="上海师范大学校区健步走路线图，含起点、三个趣味打卡站和终点" />
                 </div>
-                <div class="map-hint"><i data-lucide="scan-line"></i><span>到达点位后，用手机轻触 NFC 标牌</span></div>
+                <div class="route-endpoints" aria-label="路线起终点">
+                  <div class="endpoint-card endpoint-start"><span class="endpoint-badge">起点</span><div><strong>集合出发</strong><small>扫码开启路线</small></div></div>
+                  <i class="endpoint-arrow" data-lucide="arrow-right" aria-hidden="true"></i>
+                  <div class="endpoint-card endpoint-finish"><span class="endpoint-badge">终点</span><div><strong>完成挑战</strong><small>3 个打卡站后解锁</small></div></div>
+                </div>
+                <div class="route-timer" aria-live="polite"><i data-lucide="timer"></i><div><span id="timingStatus">起点扫码后开始</span><strong data-route-time>00:00</strong></div></div>
+                <div class="route-flow" aria-label="完整打卡流程">
+                  <span class="flow-node flow-start"><b>起</b><small>起点</small></span><i data-lucide="chevron-right"></i>
+                  <span class="flow-node"><b>A</b><small>起步站</small></span><i data-lucide="chevron-right"></i>
+                  <span class="flow-node"><b>B</b><small>途中站</small></span><i data-lucide="chevron-right"></i>
+                  <span class="flow-node"><b>C</b><small>终点站</small></span><i data-lucide="chevron-right"></i>
+                  <span class="flow-node flow-finish"><b>终</b><small>终点</small></span>
+                </div>
+                <div class="map-hint"><i data-lucide="scan-line"></i><span>起点 → A 起步站 → B 途中站 → C 终点站 → 终点</span></div>
               </section>
 
               <section class="station-section">
                 <div class="section-heading compact">
-                  <div><span class="section-kicker">沿途任务</span><h3>3 个健康点位</h3></div>
+                  <div><span class="section-kicker">沿途任务</span><h3>3 个趣味打卡点</h3></div>
                   <button class="text-button" data-action="demo-complete">演示完赛</button>
                 </div>
                 <div class="station-list" id="stationList"></div>
@@ -96,59 +89,17 @@
             </div>
           </section>
 
-          <section class="screen" data-screen="action" aria-label="动作引导">
-            <header class="app-header sub-header">
-              <button class="icon-button" data-action="back-route" aria-label="返回路线" title="返回"><i data-lucide="chevron-left"></i></button>
-              <div class="sub-title"><h1 id="actionTitle">点位 1 · 肩颈舒展</h1><p>NFC 已识别 · 绿茵庭</p></div>
-              <span class="header-step" id="headerStep">1/3</span>
-            </header>
-            <div class="content detail-content">
-              <section class="checkpoint-status">
-                <div><span class="live-dot"></span><span>PATCH_01 / NFC CONNECTED</span></div>
-                <i data-lucide="badge-check"></i>
-              </section>
-              <section class="motion-card">
-                <div class="motion-orbit orbit-one"></div>
-                <div class="motion-orbit orbit-two"></div>
-                <div class="motion-person" id="motionPerson" aria-label="动作示意动画">
-                  <div class="person-head"></div>
-                  <div class="person-neck"></div>
-                  <div class="person-body"></div>
-                  <div class="person-arm arm-left"><span></span></div>
-                  <div class="person-arm arm-right"><span></span></div>
-                </div>
-                <div class="motion-tag"><i data-lucide="move-up"></i><span id="motionTagText">抬头看天 · 肩胛骨后夹</span></div>
-              </section>
-              <section class="instruction-block">
-                <p class="step-index">01 / 保持站立</p>
-                <h2 id="instructionTitle">打开胸腔，深呼吸</h2>
-                <p id="instructionText">双脚站稳，手臂自然抬起，肩胛骨向后轻夹，感受胸前舒展。</p>
-                <div class="timer-row">
-                  <div class="timer" id="timerDisplay">00:10</div>
-                  <button class="timer-button" data-action="toggle-timer"><i data-lucide="play"></i><span>开始计时</span></button>
-                </div>
-              </section>
-              <section class="tip-panel">
-                <div class="tip-icon"><i data-lucide="shield-check"></i></div>
-                <div><strong>安全提示</strong><p>动作缓慢、不憋气；如有明显不适，请立即停止。</p></div>
-              </section>
-            </div>
-            <div class="sticky-cta">
-              <button class="primary-button" data-action="finish-action"><span>动作完成，去拍照</span><i data-lucide="camera"></i></button>
-            </div>
-          </section>
-
           <section class="screen" data-screen="upload" aria-label="照片上传">
             <header class="app-header sub-header">
-              <button class="icon-button" data-action="back-action" aria-label="返回动作" title="返回"><i data-lucide="chevron-left"></i></button>
-              <div class="sub-title"><h1>上传打卡照片</h1><p id="uploadSubtitle">点位 1 · 肩颈舒展</p></div>
+              <button class="icon-button" data-action="back-route" aria-label="返回路线" title="返回"><i data-lucide="chevron-left"></i></button>
+              <div class="sub-title"><h1>上传打卡照片</h1><p id="uploadSubtitle">点位 1 · 起步站：托球平衡挑战</p></div>
               <span class="header-step" id="uploadStep">1/3</span>
             </header>
             <div class="content upload-content">
               <section class="upload-intro">
-                <span class="mono-label dark">ACTION PROOF / 记录当下</span>
-                <h2>完成动作，并拍一张照片</h2>
-                <p>支持单人自拍，也可以邀请同伴一起入镜。</p>
+                <span class="mono-label dark">CHECK-IN PHOTO / 拍照即完成</span>
+                <h2>拍照上传，完成点位</h2>
+                <p>扫码成功后直接拍照提交，无需额外步骤。</p>
               </section>
               <label class="photo-stage" for="photoInput" id="photoStage">
                 <input id="photoInput" type="file" accept="image/*" capture="environment" hidden />
@@ -164,8 +115,8 @@
               <section class="photo-tips">
                 <h3>拍照小贴士</h3>
                 <div class="tips-grid">
-                  <div><i data-lucide="focus"></i><span>动作清晰<br />人物完整</span></div>
-                  <div><i data-lucide="users-round"></i><span>可邀请<br />同伴合照</span></div>
+                  <div><i data-lucide="focus"></i><span>现场清晰<br />人物完整</span></div>
+                  <div><i data-lucide="users-round"></i><span>光线充足<br />画面稳定</span></div>
                   <div><i data-lucide="eye-off"></i><span>避开工牌<br />敏感信息</span></div>
                 </div>
               </section>
@@ -179,23 +130,23 @@
           <section class="screen" data-screen="certificate" aria-label="完赛凭证">
             <header class="app-header sub-header">
               <button class="icon-button" data-action="back-route" aria-label="返回路线" title="返回"><i data-lucide="chevron-left"></i></button>
-              <div class="sub-title"><h1>完赛凭证</h1><p>PATCHWALK 2026</p></div>
+              <div class="sub-title"><h1>完赛凭证</h1><p>SHNU WALK 2026</p></div>
               <button class="icon-button" data-action="share" aria-label="分享凭证" title="分享"><i data-lucide="share-2"></i></button>
             </header>
             <div class="content certificate-content">
               <section class="certificate-card" id="certificateCard">
                 <div class="certificate-top">
-                  <span class="mono-label">PATCH COMPLETE / RELEASE</span>
-                  <h2>午间漫步 · 健康同行</h2>
-                  <p>完成约 1 公里闭环健康路线</p>
+                  <span class="mono-label">SHNU WALK / CHALLENGE COMPLETE</span>
+                  <h2>步履时光·健康同行</h2>
+                  <p>上海师范大学教职工趣味挑战赛 · 3.50 km · 3/3 点位完成</p>
                   <div class="complete-seal"><i data-lucide="check"></i></div>
                 </div>
                 <div class="certificate-body">
                   <p class="certificate-id">PATCH-WALK-<span id="certificateId">260804</span></p>
                   <div class="score-big"><b>3/3</b><span>打卡完成</span></div>
                   <div class="certificate-stations" id="certificateStations"></div>
-                  <p class="certificate-note">回到公司大楼 · 能量已释放</p>
-                  <div class="certificate-meta"><span>完成时间 <b id="completeTime">12:42</b></span><span>路程 <b>1.02 km</b></span></div>
+                  <p class="certificate-note">上海师大校园 · 一起走出好状态</p>
+                  <div class="certificate-meta"><span>完成时间 <b id="completeTime">12:42</b></span><span>用时 <b id="completeDuration">00:00</b></span><span>路程 <b>3.50 km</b></span></div>
                   <div class="certificate-footer">HEALTH STATUS: RELEASED ✓</div>
                 </div>
               </section>
@@ -209,7 +160,7 @@
 
           <section class="screen" data-screen="records" aria-label="运动记录">
             <header class="app-header">
-              <div><p class="eyebrow">ACTIVITY LOG</p><h1>运动记录</h1></div>
+              <div><p class="eyebrow">SHNU WALK LOG</p><h1>运动记录</h1></div>
               <button class="icon-button" aria-label="筛选记录" title="筛选"><i data-lucide="sliders-horizontal"></i></button>
             </header>
             <div class="content records-content">
@@ -218,7 +169,7 @@
                 <div class="energy-ring"><span id="ringValue">60%</span></div>
               </section>
               <section class="metric-grid">
-                <div><i data-lucide="route"></i><strong id="totalDistance">1.0</strong><span>累计公里</span></div>
+                <div><i data-lucide="route"></i><strong id="totalDistance">0.0</strong><span>累计公里</span></div>
                 <div><i data-lucide="flame"></i><strong id="totalCalories">68</strong><span>活力消耗</span></div>
                 <div><i data-lucide="badge-check"></i><strong id="totalPoints">3</strong><span>完成点位</span></div>
               </section>
@@ -231,12 +182,12 @@
                 <div class="section-heading compact"><div><span class="section-kicker">RECENT</span><h3>最近活动</h3></div></div>
                 <article class="history-item">
                   <div class="history-date"><b>04</b><span>AUG</span></div>
-                  <div><strong>午间漫步 · 健康同行</strong><span>1.02 km · 18 分钟</span></div>
+                  <div><strong>步履时光·健康同行</strong><span>3.50 km · 45 分钟</span></div>
                   <span class="history-status">完成</span>
                 </article>
                 <article class="history-item muted">
                   <div class="history-date"><b>31</b><span>JUL</span></div>
-                  <div><strong>园区活力路线</strong><span>0.86 km · 16 分钟</span></div>
+                  <div><strong>园区活力路线</strong><span>2.80 km · 36 分钟</span></div>
                   <span class="history-status">完成</span>
                 </article>
               </section>
@@ -245,7 +196,7 @@
 
           <section class="screen" data-screen="profile" aria-label="个人中心">
             <header class="app-header profile-header">
-              <div><p class="eyebrow">MY PATCHWALK</p><h1>个人中心</h1></div>
+              <div><p class="eyebrow">SHNU WALK / 我的</p><h1>个人中心</h1></div>
               <button class="icon-button" aria-label="设置" title="设置"><i data-lucide="settings"></i></button>
             </header>
             <div class="content profile-content">
@@ -284,18 +235,18 @@
         </nav>
 
         <div class="sheet-backdrop" id="sheetBackdrop"></div>
-        <section class="bottom-sheet" id="nfcSheet" aria-modal="true" role="dialog" aria-labelledby="nfcTitle">
+        <section class="bottom-sheet" id="scanSheet" aria-modal="true" role="dialog" aria-labelledby="scanTitle">
           <div class="sheet-handle"></div>
           <button class="sheet-close icon-button" data-action="close-sheet" aria-label="关闭" title="关闭"><i data-lucide="x"></i></button>
-          <div class="nfc-visual">
-            <div class="nfc-phone"><i data-lucide="smartphone"></i><span class="nfc-chip">NFC</span></div>
-            <span class="nfc-wave wave-1"></span><span class="nfc-wave wave-2"></span><span class="nfc-wave wave-3"></span>
+          <div class="scan-visual">
+            <div class="scan-phone"><i data-lucide="scan-line"></i><span class="scan-chip">QR</span></div>
+            <span class="scan-wave wave-1"></span><span class="scan-wave wave-2"></span><span class="scan-wave wave-3"></span>
           </div>
-          <span class="mono-label dark">NFC TOUCH / CHECK IN</span>
-          <h2 id="nfcTitle">靠近点位标牌</h2>
-          <p id="nfcDescription">将手机顶部靠近 NFC 感应区，保持 1–2 秒。</p>
-          <button class="primary-button" data-action="simulate-nfc"><span>模拟碰一碰</span><i data-lucide="radio-tower"></i></button>
-          <button class="sheet-link" data-action="open-action-manual">无法感应？输入点位码</button>
+          <span class="mono-label dark">QR SCAN / CHECK IN</span>
+          <h2 id="scanTitle">扫描点位二维码</h2>
+          <p id="scanDescription">请对准当前点位标牌上的二维码，扫码成功后直接拍照上传。</p>
+          <button class="primary-button" data-action="simulate-scan"><span id="scanActionLabel">模拟扫码打卡</span><i data-lucide="scan-line"></i></button>
+          <button class="sheet-link" data-action="close-sheet">返回路线</button>
         </section>
 
         <section class="bottom-sheet success-sheet" id="successSheet" aria-modal="true" role="dialog" aria-labelledby="successTitle">
@@ -303,7 +254,7 @@
           <div class="success-mark"><i data-lucide="check"></i></div>
           <span class="mono-label dark">POINT CLEARED</span>
           <h2 id="successTitle">点位完成</h2>
-          <p id="successDescription">肩颈已经醒来，继续沿路线前往下一站。</p>
+          <p id="successDescription">照片已上传，继续沿路线前往下一站。</p>
           <div class="success-progress"><span id="successProgressBar"></span></div>
           <button class="primary-button" data-action="continue-route"><span id="continueLabel">查看下一站</span><i data-lucide="arrow-right"></i></button>
         </section>
@@ -311,9 +262,9 @@
         <div class="toast" id="toast" role="status"><i data-lucide="check-circle-2"></i><span>已完成</span></div>
       </section>
       <aside class="prototype-note">
-        <span>PATCHWALK / INTERACTIVE PROTOTYPE</span>
-        <strong>碰一碰，走一程，松一松。</strong>
-        <p>390 × 844 移动端体验 · 桌面端自动呈现设备预览</p>
+        <span>SHNU WALK / INTERACTIVE PROTOTYPE</span>
+        <strong>一起走出好状态。</strong>
+        <p>390 × 844 移动端体验 · 参照活动主视觉重构</p>
       </aside>
     </main>
 

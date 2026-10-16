@@ -1,6 +1,6 @@
 <view class="page route-page with-fixed-action">
   <view class="route-heading">
-    <view><text class="eyebrow">PATCHWALK / 轻跑计划</text><text class="page-title">{{activity.title}}</text></view>
+    <view><text class="eyebrow">上海师范大学教职工活动</text><text class="page-title">步履时光·健康同行</text></view>
     <view class="profile-dot" bindtap="openProfileAuthorization"><image wx:if="{{user.avatarUrl}}" src="{{user.avatarUrl}}" mode="aspectFill"></image><text wx:else>{{userInitial}}</text></view>
   </view>
 
@@ -22,7 +22,7 @@
     <view class="challenge-copy">
       <text class="challenge-code mono">TODAY / ROUTE 01</text>
       <text class="challenge-title">{{totalDistance}} 公里实景健康漫步</text>
-      <text class="challenge-desc">沿真实轨迹行进，完成 3 次身体唤醒</text>
+      <text class="challenge-desc">起点开始计时 · 3 次照片打卡 · 终点结束计时</text>
     </view>
     <view class="challenge-time"><text>15–20</text><text>分钟</text></view>
   </view>
@@ -37,6 +37,8 @@
     </view>
 
     <view class="map"><route-map completed="{{completed}}" bindstationtap="handleStationTap"></route-map></view>
+    <view class="route-timer"><text class="timer-icon">◷</text><view><text>{{timingStatus}}</text><text>{{elapsedLabel}}</text></view></view>
+    <view class="route-flow"><view class="flow-node {{started ? 'done' : 'current'}}"><text>起</text><text>起点</text></view><text class="flow-arrow">›</text><view class="flow-node {{completed > 0 ? 'done' : completed === 0 && started ? 'current' : ''}}"><text>A</text><text>起步站</text></view><text class="flow-arrow">›</text><view class="flow-node {{completed > 1 ? 'done' : completed === 1 ? 'current' : ''}}"><text>B</text><text>途中站</text></view><text class="flow-arrow">›</text><view class="flow-node {{completed > 2 ? 'done' : completed === 2 ? 'current' : ''}}"><text>C</text><text>终点站</text></view><text class="flow-arrow">›</text><view class="flow-node {{finished ? 'done' : completed === 3 ? 'current' : ''}}"><text>终</text><text>终点</text></view></view>
     <view class="map-hint"><text class="scan-icon">⌗</text><text>{{mapHint}}</text></view>
   </view>
 
@@ -49,7 +51,7 @@
     <view class="station-card card endpoint-card {{started ? 'done' : ''}}" bindtap="handleStartTap">
       <view class="station-number">{{started ? '✓' : '起'}}</view>
       <view class="station-copy"><text>起点</text><text>{{started ? '起点已打卡' : '扫描起点二维码'}}</text></view>
-      <view class="station-meta"><text>{{started ? 'DONE' : 'NEXT'}}</text><text>开始计时</text></view>
+      <view class="station-meta"><text>{{started ? '已完成' : '下一点'}}</text><text>开始计时</text></view>
     </view>
     <view wx:for="{{stations}}" wx:key="id" class="station-card card {{item.done ? 'done' : ''}} {{item.locked ? 'locked' : ''}}" data-index="{{index}}" bindtap="handleStationTap">
       <view class="station-number">{{item.done ? '✓' : item.number}}</view>
@@ -59,7 +61,7 @@
     <view class="station-card card endpoint-card {{finished ? 'done' : ''}} {{completed < 3 ? 'locked' : ''}}" bindtap="handleFinishTap">
       <view class="station-number">{{finished ? '✓' : '终'}}</view>
       <view class="station-copy"><text>终点</text><text>{{finished ? '终点已打卡' : '三个任务点完成后扫码'}}</text></view>
-      <view class="station-meta"><text>{{finished ? 'DONE' : completed === 3 ? 'NEXT' : 'LOCKED'}}</text><text>结束计时</text></view>
+      <view class="station-meta"><text>{{finished ? '已完成' : completed === 3 ? '下一点' : '待解锁'}}</text><text>结束计时</text></view>
     </view>
   </view>
 

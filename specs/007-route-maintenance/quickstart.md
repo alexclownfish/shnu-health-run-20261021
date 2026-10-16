@@ -2,7 +2,7 @@
 
 **实施日期**：2026-10-11。本地代码已接入完整 KMZ；未发布体验版、未更新云端环境变量。源文件与核验见 [latest-route-review.md](./latest-route-review.md)。
 
-**二维码制作更新（2026-10-13）**：在下文原五项HRQ1数据前增加固定“绿色康跑”提示行，身份、点位及路线标识不变；最新版兼容旧单行码。最新图片、原文及更新顺序见[二维码使用提示](../008-qr-usage-guidance/quickstart.md)，本次无需部署云函数或修改ACTIVITY_CONFIG。
+**二维码制作更新（2026-10-13）**：在下文原五项HRQ1数据前增加固定“悠湃体育”提示行，身份、点位及路线标识不变；最新版兼容旧单行码。最新图片、原文及更新顺序见[二维码使用提示](../008-qr-usage-guidance/quickstart.md)。本次迁移已同步客户端和两套 ACTIVITY_CONFIG，云函数仍需按部署说明重新部署。
 
 ## 已落地配置
 
@@ -12,16 +12,16 @@
 | 路线文件 | miniprogram/utils/route-20261011.js |
 | 源归档 | specs/007-route-maintenance/source/route-20261011.kmz |
 | 轨迹 | 357点，两段67/290点，不连接录制间隙 |
-| 总程 | 1.66公里，取源Distance元数据 |
-| 三站 | 打卡点1/2/3，累计约350m / 870m / 1.07km |
-| 原动作 | 肩颈舒展 / 手腕放松 / 腰背激活 |
+| 总程 | 3.50公里，取活动配置的 activityDistanceMeters；源轨迹测量值仍保留在 distanceMeters |
+| 三站 | 打卡点1/2/3，位置和阶段按路线数据 |
+| 打卡方式 | 三个点位扫码后拍照上传 |
 | 二维码 | 仍为000、001、002、003、999，原完整payload保持不变 |
 | 本机存储 | patchwalk-progress-v4-route-20261011 |
-| 开发环境 | cloudbase-d2gd1ocuha5342ad6 |
-| 开发活动 | health-run-test-20261011 |
-| 开发集合 / 函数 | finishers_test / submitCompletion |
+| 开发环境 | cloud1-d1g886bht0f7cbf69 |
+| 开发活动 | health-run-2026-event02 |
+| 开发集合 / 函数 | finishers / submitCompletion |
 
-新路线自动从未开始状态进入，旧v3进度、照片和旧上报队列保留。旧记录不显示在新页面；旧摘要保持原目标，不重标新活动。正式版上报继续关闭。
+新路线自动从未开始状态进入，旧v3进度、照片和旧上报队列保留。旧记录不显示在新页面；旧摘要保持原目标，不重标新活动。正式版需在云函数部署和审核发布后从新起点验收。
 
 ## 白屏兼容性说明
 
@@ -29,9 +29,9 @@
 
 ## 微信开发者工具与手机
 
-1. 导入仓库根目录，重新编译，核对首页1.66公里、五个地图标记及三个点位名称。
+1. 导入仓库根目录，重新编译，核对首页3.50公里、五个地图标记及三个点位名称。
 2. 起终点约相距6米，两个标签已设不同偏移；真机确认不会遮挡。标记本身未移动。
-3. 依次扫码：起点 → 任务1动作/照片 → 任务2 → 任务3 → 终点。起点开始计时、终点结束，第三站完成后继续计时。
+3. 依次扫码：起点 → 任务1拍照上传 → 任务2拍照上传 → 任务3拍照上传 → 终点。起点开始计时、终点结束，第三站上传后继续扫码终点。
 4. 测试错码、跳站、重复扫描、退出重进，以及带旧v3记录启动；确认新路线不能继承旧完成状态。
 5. 上传新的体验版，用手机核对地图与现场道路。坐标按标准KML WGS84转换，源文件无明确坐标系声明，现场若发现整体偏移需核对两步路导出设置。
 6. H5预览共享新轨迹与点位，仍是示意Canvas，不能代替微信真实底图验收。其距离为配置里程，非手机GPS实测。
@@ -40,11 +40,11 @@
 
 地图和本机打卡不依赖此步骤；如需收集新路线完赛摘要，必须同步开发云配置。
 
-1. 云开发选择 cloudbase-d2gd1ocuha5342ad6，找到已部署 submitCompletion。
-2. 将函数环境变量 ACTIVITY_CONFIG 的值替换为 cloudfunctions/submitCompletion/activity.example.json 的完整JSON并保存生效。关键字段：activityId=health-run-test-20261011、routeVersion=route-20261011-v1。
+1. 云开发选择 cloud1-d1g886bht0f7cbf69，找到已部署 submitCompletion。
+2. 将函数环境变量 ACTIVITY_CONFIG 的值替换为 cloudfunctions/submitCompletion/activity.example.json 的完整JSON并保存生效。关键字段：activityId=health-run-2026-event02、routeVersion=route-20261011-v1。
 3. 文件路径或上传JSON文件不能代替环境变量内容；本轮云函数逻辑未修改，无需因换地图新建函数、数据库或集合。
 4. 测试窗口仍为2026-10-09至2026-11-09，补交至11-10，Asia/Shanghai；若不在窗口内请调整小程序/导出所用开发配置与云端ACTIVITY_CONFIG。
-5. 从新路线起点开始到终点，确认finishers_test新增对应活动与版本记录；旧活动记录保留。
+5. 从新路线起点开始到终点，确认finishers新增对应活动与版本记录；旧活动记录保留。
 6. 已部署配置若仍是旧版本，汇总会被拒绝；本机打卡、计时和凭证仍可完成。先同步云配置再完整联调。客户端会保留新路线摘要并在配置错位时等待重试；更新云配置后重新打开体验版即可补发。
 
 ## 参与者编号
@@ -53,20 +53,20 @@
 
 完赛凭证会等待本次上报完成后再进入页面，并显示云端返回的相同编号；断网、云函数未部署、云函数返回结果缺少编号或仍在补发时显示“上传后生成”。如果旧体验版已经完赛但没有编号，更新后的App启动或打开凭证时会用本地完赛记录重新请求；云端已有记录时通过 `alreadyAccepted` 返回编号。客户端不会再把“没有编号的成功响应”当成最终完成，而会保留待上传记录，直到云函数返回编号。本次新增了云函数返回编号和客户端本地保存逻辑，因此必须重新部署 `submitCompletion` 并重新上传小程序体验版。
 
-导出仍可从控制台取得finishers_test完整字段JSON，然后运行：
+导出仍可从控制台取得finishers完整字段JSON，然后运行：
 
 ```bash
-bash tools/export-finishers/export-test.sh "$HOME/Downloads/finishers_test.json"
+bash tools/export-finishers/export-test.sh "$HOME/Downloads/finishers.json"
 ```
 
-脚本读取更新后的activity.example.json，筛选新路线开发活动；旧health-run-test记录不混入。要导出旧名单，使用匹配旧活动的私有配置，并用导出工具显式指定配置，不能把旧记录修改成新活动。其余权限与导出方法见 [开发环境说明](../005-finisher-list-export/development-setup.md)。
+脚本读取更新后的activity.example.json，筛选 health-run-2026-event02；旧活动记录不混入。要导出旧名单，使用匹配旧活动的私有配置，并用导出工具显式指定配置，不能把旧记录修改成新活动。其余权限与导出方法见 [开发环境说明](../005-finisher-list-export/development-setup.md)。
 
 ## 后续仍保留三个任务点时
 
 1. 保存新原始轨迹，结构化解析成JavaScript数据模块（module.exports）。track顺序保持实际行进顺序；segmentStarts保留录制中断；禁止直接跨段补线。
-2. 更新bounds、source.distanceMeters，checkpoints写精确坐标、正确经过阶段的trackIndex和分段累计distanceKm；往返重合处用标注时间与顺序判断阶段。
+2. 更新bounds、source.distanceMeters；如活动对外总里程与源轨迹测量值不同，另设 source.activityDistanceMeters。checkpoints写精确坐标、正确经过阶段的trackIndex和分段累计distanceKm；往返重合处用标注时间与顺序判断阶段。
 3. route.js读取该新文件，并统一routeId、routeVersion；独立活动同步新的开发activityId及云端/导出配置。存储键按routeId自动隔离；仅改routeVersion不会另建本机进度。
-4. 保留动作时stations.js无需再改距离或位置文字，它们读取共享路线。更换动作、时长、安全提示时编辑对应站配置。
+4. 三个点位的距离和位置读取共享路线；若更换照片要求或点位文案，编辑对应站配置。
 5. 同一逻辑点移动可沿用现有码并搬迁标牌；换二维码身份时改qr-tags.js的qrId/token并重新打印，地图坐标不会自动改二维码。
 6. 更新路线测试中的真实数量、索引、精确点坐标和里程，运行npm test；运行预览构建器并重新上传体验版。
 7. 真机按上述流程验收，不把静态二维码识别当作GPS到场证明。
@@ -79,14 +79,14 @@ bash tools/export-finishers/export-test.sh "$HOME/Downloads/finishers_test.json"
 
 ## 本轮核验与待验收
 
-自动检查覆盖轨迹分段、精确点坐标转换、原记录保留、扫码动作照片前置条件、起终点计时、云汇总目标隔离与导出过滤。真机地图落位、五张现场二维码和新活动真实云写入仍待验收；未操作正式环境。
+自动检查覆盖轨迹分段、精确点坐标转换、原记录保留、扫码照片前置条件、起终点计时、云汇总目标隔离与导出过滤。真机地图落位、五张现场二维码和新活动真实云写入仍待验收；未操作正式环境。
 ## 当前固定标识
 
 本活动的标识已经固定。日常重新编译、上传体验版、重新部署云函数或修复上报代码时，都不能生成或修改它们：
 
     routeId      = route-20261011
     routeVersion = route-20261011-v1
-    activityId   = health-run-test-20261011
+    activityId   = health-run-2026-event02
 
 小程序端、云函数 ACTIVITY_CONFIG 和 Excel 导出配置必须始终使用这三项。只有更换路线、开启全新活动或明确需要与旧名单隔离时，才创建新标识，并在实施前明确告知。
 
@@ -94,12 +94,12 @@ bash tools/export-finishers/export-test.sh "$HOME/Downloads/finishers_test.json"
 
 参与者编号由云端根据活动编号和微信用户身份生成。同一用户在同一活动中重复上报仍返回同一编号，与导出名单中的 participantId 一致；它不是跨活动通用的微信用户 ID。
 
-- 云环境：cloudbase-d2gd1ocuha5342ad6；云函数：submitCompletion；集合：finishers_test。
+- 云环境：cloud1-d1g886bht0f7cbf69；云函数：submitCompletion；集合：finishers。
 - 环境变量名：ACTIVITY_CONFIG；完整值沿用 cloudfunctions/submitCompletion/activity.example.json，不修改活动编号、路线版本或时间窗口。
 - 需要重新部署最新 submitCompletion（包括 service.js），使 accepted 和 alreadyAccepted 响应都返回 participantId。
 - 需要重新编译、上传并更新手机体验版；仅部署云函数不会更新手机端补发和刷新逻辑。
 - 最新体验版打开已完赛但无编号的凭证时，会重报本地完赛摘要，保存云端编号并刷新页面。成功响应缺少编号时保留待上传记录，下次重新尝试；不要求重新走完打卡流程。
 - App启动与凭证页面同时补发时，两处等待同一个请求完成，编号保存后再刷新凭证，不会因后台请求进行中而提前刷新。
-- 如果仍显示“上传后生成”，核查 finishers_test 中当前活动的记录是否存在、是否有 participantId，再检查云函数调用日志及返回值。该占位文本本身无法区分上传失败与响应缺少编号。
+- 如果仍显示“上传后生成”，核查 finishers 中当前活动的记录是否存在、是否有 participantId，再检查云函数调用日志及返回值。该占位文本本身无法区分上传失败与响应缺少编号。
 
-正式环境保持关闭。本地自动测试不代表云函数已经部署或手机端已经验收。
+本地自动测试不代表云函数已经部署或手机端已经验收；正式环境仍需单独完成云函数、数据库和真机验收。

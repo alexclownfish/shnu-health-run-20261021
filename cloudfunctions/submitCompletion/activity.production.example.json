@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "production",
-  "environmentId": "health-run-d1gj2x9lm0e9ca17b",
-  "appId": "wx44b333d3d8cef506",
-  "activityId": "health-run-2026-event01",
-  "title": "码上出发·健康同行",
+  "environmentId": "shnu-health-run-20261021-dc2d3ff",
+  "appId": "wx9d16b2e04851fc36",
+  "activityId": "health-run-2026-event02",
+  "title": "步履时光·健康同行",
   "routeVersion": "route-20261011-v1",
   "requiredPoints": ["001", "002", "003"],
   "startPointCode": "000",
@@ -13,8 +13,7 @@
   "endsAt": 1794153600000,
   "reportingClosesAt": 1794240000000,
   "excludedOpenIds": [
-    "oniZ63QqE1453VOqTbF9DW9Dj8X0",
-    "oniZ63QIk3PKZbe4xyAnLsvJqWes"
+    "oniZ63QqE1453VOqTbF9DW9Dj8X0"
   ],
   "timeZone": "Asia/Shanghai"
 }

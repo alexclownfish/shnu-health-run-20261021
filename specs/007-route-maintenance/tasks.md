@@ -10,10 +10,10 @@
 
 ## US1: 新路线地图 (P1)
 
-**Independent Test**: 完整轨迹、分段、五点原坐标转换正确，距离和原动作一致。
+**Independent Test**: 完整轨迹、分段、五点原坐标转换正确，距离和照片打卡点一致。
 
 - [x] T003 [US1] 更新 miniprogram/utils/route.js 和 components/route-map/route-map.js，按两段绘图，使用标注精确坐标和正确顺序。
-- [x] T004 [US1] 更新 miniprogram/utils/stations.js 位置与距离，保持动作，路线首页使用共享总里程。
+- [x] T004 [US1] 更新 miniprogram/utils/stations.js 位置与距离，保持三个照片打卡点，路线首页使用共享总里程。
 - [x] T005 [US1] 更新 specs/003-warm-orange-indigo-theme/preview/build-preview.js 和 preview.js，共享分段和点位资料后重建 index.html。
 - [x] T006 [US1] 更新 tests/run-tests.js 路线断言并新增原坐标、分段和里程检查。
 
@@ -22,7 +22,7 @@
 **Independent Test**: 旧进度不算入新路线且保持原样；新活动不重标旧上报。
 
 - [x] T007 [US2] 更新 miniprogram/utils/progress.js 和 app.js，使用路线独立存储与统一 routeId，增加 tests/run-tests.js 旧数据保留回归。
-- [x] T008 [US2] 更新 miniprogram/utils/config.js 与 cloudfunctions/submitCompletion/activity.example.json 的新开发目标，保持正式关闭；验证 tests/completion-tests.js。
+- [x] T008 [US2] 更新 miniprogram/utils/config.js 与 cloudfunctions/submitCompletion/activity.example.json 的新开发目标，同步测试/正式配置；验证 tests/completion-tests.js。
 
 ## Verification
 
@@ -40,11 +40,11 @@ T001 → T002 → T003/T004 → T005/T006 → T007/T008 → T009/T010。共10项
 ## 本地验证结果（2026-10-11）
 
 - T001–T010全部完成。requirements.md为6/6通过，未改变需求检查状态。
-- tests/run-tests.js：31项通过，覆盖小程序结构、轨迹/标记、扫码顺序、动作/照片、起终点计时及旧记录保留。
+- tests/run-tests.js：31项通过，覆盖小程序结构、轨迹/标记、扫码顺序、照片上传、起终点计时及旧记录保留。
 - tests/completion-tests.js：39项通过，覆盖新开发模板与客户端一致、旧摘要目标隔离、云校验/名单去重、过滤与真实Excel生成。
 - 独立源数据审计：归档与用户源KMZ字节哈希一致；全部357坐标、分段[0,67]、三站精确标注、分段累计距离、源Distance及KML哈希一致。
 - 生成H5数据与小程序一致；Canvas调用检查验证620×380、360×240及0–3进度下的67/290点独立路径、五个标记和标签在画布内。此检查不是浏览器截图或真机验收。
-- 二维码配置与HEAD一致，正式上报关闭；JavaScript语法与git diff --check通过。
+- 二维码配置与HEAD一致；JavaScript语法与git diff --check通过。
 - 未发布小程序、未推送仓库、未更改云端ACTIVITY_CONFIG。真实地图落位、S/F标签效果、现场扫码及开发云新活动仍按quickstart.md验收。
 
 ## 白屏修复跟进
