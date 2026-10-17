@@ -18,10 +18,6 @@
 .challenge-code { display: block; color: var(--yellow); font-size: 17rpx; }
 .challenge-title { display: block; margin-top: 20rpx; font-size: 34rpx; font-weight: 800; }
 .challenge-desc { display: block; margin-top: 9rpx; color: #dff5fa; font-size: 19rpx; }
-.challenge-time { position: relative; z-index: 2; padding-top: 44rpx; text-align: right; }
-.challenge-time text { display: block; }
-.challenge-time text:first-child { color: var(--yellow); font-family: monospace; font-size: 31rpx; font-weight: 600; }
-.challenge-time text:last-child { margin-top: 5rpx; color: #dff5fa; font-size: 17rpx; }
 .challenge-ring { position: absolute; border: 40rpx solid rgba(255,211,78,.18); border-radius: 50%; }
 .ring-one { right: -100rpx; bottom: -170rpx; width: 330rpx; height: 330rpx; }
 .ring-two { right: 80rpx; top: -100rpx; width: 170rpx; height: 170rpx; }
@@ -57,4 +53,4 @@
 .station-copy text:last-child { margin-top: 6rpx; color: var(--muted); font-size: 18rpx; }
 .station-meta { text-align: right; }
 .station-meta text:first-child { color: var(--orange); font-family: monospace; font-size: 17rpx; font-weight: 600; }
-.station-meta text:last-child { margin-top: 7rpx; color: var(--muted); font-size: 17rpx; }
+.station-meta text + text { margin-top: 7rpx; color: var(--muted); font-size: 17rpx; }

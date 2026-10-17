@@ -131,10 +131,10 @@ Page({
     context.textAlign = 'left'
     context.fillStyle = '#ffd22e'
     context.font = '700 22px monospace'
-    context.fillText('步履时光 / 完赛凭证', 76, 91)
+    context.fillText('步履拾光 / 完赛凭证', 76, 91)
     context.fillStyle = '#ffffff'
     context.font = '800 38px sans-serif'
-    context.fillText('步履时光·健康同行', 76, 158)
+    context.fillText('步履拾光·健康同行', 76, 158)
     context.fillStyle = '#dff5fa'
     context.font = '400 22px sans-serif'
     context.fillText('完成实景健康路线', 76, 208)
@@ -253,12 +253,12 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '我完成了“步履时光·健康同行”活动，3/3 点位全部打卡！',
+      title: '我完成了“步履拾光·健康同行”活动，3/3 点位全部打卡！',
       path: '/pages/route/route'
     }
   },
 
   onShareTimeline() {
-    return { title: '步履时光·健康同行' }
+    return { title: '步履拾光·健康同行' }
   }
 })

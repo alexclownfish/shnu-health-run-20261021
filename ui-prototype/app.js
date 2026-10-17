@@ -2,7 +2,6 @@ const stations = [
   {
     title: "起步站：托球平衡挑战",
     location: "A 点 · 起步站",
-    distance: "约 700 m",
     tag: "第一打卡点",
 
     success: "照片已上传，继续沿路线前往下一站。",
@@ -10,7 +9,6 @@ const stations = [
   {
     title: "途中站：趣味翻翻乐",
     location: "B 点 · 途中站",
-    distance: "约 1.90 km",
     tag: "第二打卡点",
 
     success: "照片已上传，还剩最后一个点位。",
@@ -18,7 +16,6 @@ const stations = [
   {
     title: "终点站：快乐燃动锤",
     location: "C 点 · 终点站",
-    distance: "约 3.50 km",
     tag: "第三打卡点",
 
     success: "三个点位照片均已上传，前往终点扫码解锁完赛凭证。",
@@ -104,7 +101,7 @@ function renderStations() {
       <article class="station-card ${done ? "is-done" : ""} ${locked ? "is-locked" : ""}" data-station="${index}" ${locked ? "aria-disabled=\"true\"" : ""}>
         <span class="station-number">${done ? "✓" : String(index + 1).padStart(2, "0")}</span>
         <div class="station-info"><strong>${station.title}</strong><span>${station.location} · ${station.tag}</span></div>
-        <div class="station-meta"><b>${done ? "已完成" : current ? "下一点" : "待解锁"}</b><span>${station.distance}</span></div>
+        <div class="station-meta"><b>${done ? "已完成" : current ? "下一点" : "待解锁"}</b></div>
       </article>`;
   }).join("");
 
@@ -335,7 +332,7 @@ document.addEventListener("click", (event) => {
     },
     share: () => {
       if (navigator.share) {
-        navigator.share({ title: "步履时光·健康同行", text: "我完成了 3.50 公里健步走，3/3 点位全部打卡！" }).catch(() => {});
+        navigator.share({ title: "步履拾光·健康同行", text: "我完成了 3.50 公里健步走，3/3 点位全部打卡！" }).catch(() => {});
       } else {
         showToast("分享文案已准备");
       }

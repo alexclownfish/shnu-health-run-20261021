@@ -63,7 +63,7 @@
   "environmentId": "cloud1-d1g886bht0f7cbf69",
   "appId": "wx9d16b2e04851fc36",
   "activityId": "health-run-2026-event02",
-  "title": "步履时光·健康同行",
+  "title": "步履拾光·健康同行",
   "routeVersion": "route-20261011-v1",
   "requiredPoints": ["001", "002", "003"],
   "startPointCode": "000",
@@ -79,8 +79,10 @@
 时间必须是毫秒整数，可在开发者工具控制台求值，例如 `Date.parse('2026-10-09T08:00:00+08:00')`。不要填秒、日期字符串或 0。
 startsAt/endsAt 限制手机起止时间；reportingClosesAt 限制服务器接收时间，可设结束后一天补交，具体由活动组织者决定。
 
-正式配置使用 mode=production、正式环境 ID、health-run-2026-event02、步履时光·健康同行、正式活动时间和开发账号 excludedOpenIds。当前测试和正式环境按用户要求使用同一活动编号，但数据仍由不同云环境隔离。保留两份与云端完全一致的电脑配置 `test.local.json`、`production.local.json` 用于导出，`.local.json` 已被 Git 忽略。
+正式配置使用 mode=production、正式环境 ID、health-run-2026-event02、步履拾光·健康同行、正式活动时间和开发账号 excludedOpenIds。当前测试和正式环境按用户要求使用同一活动编号，但数据仍由不同云环境隔离。保留两份与云端完全一致的电脑配置 `test.local.json`、`production.local.json` 用于导出，`.local.json` 已被 Git 忽略。
 活动开始后冻结名称、版本、点位和窗口；下一次活动使用新 activityId。路线更改时同步小程序清单与云端配置，不能只改地图后沿用旧版本。
+
+2026-10-17 名称错字更正为“步履拾光·健康同行”：测试、正式两个环境均先部署本次兼容版 `submitCompletion`，再将各自 `ACTIVITY_CONFIG.title` 改为新名称，并同步电脑导出配置。当前活动的旧名称记录仍可用于重复上报回查与名单导出，Excel 统一显示新名称；历史数据库记录无需改写，活动编号和路线版本保持不变。页面、分享标题和保存凭证的更正需重新上传、发布小程序后生效。
 
 ## 5. 取得开发/测试账号并设置排除名单
 

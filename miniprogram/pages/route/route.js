@@ -186,14 +186,14 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '步履时光·健康同行，一起走完这条健康路线',
+      title: '步履拾光·健康同行，一起走完这条健康路线',
       path: '/pages/route/route'
     }
   },
 
   onShareTimeline() {
     return {
-      title: '步履时光·健康同行'
+      title: '步履拾光·健康同行'
     }
   }
 })

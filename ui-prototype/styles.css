@@ -109,12 +109,9 @@ svg { display: block; }
 .challenge-banner { position: relative; min-height: 118px; overflow: hidden; display: flex; justify-content: space-between; align-items: flex-start; padding: 17px 16px; margin-bottom: 12px; border: 0; border-radius: 14px; color: white; background: var(--deep); box-shadow: 0 9px 22px rgba(0, 88, 165, .22); }
 .challenge-banner::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0, 50, 115, .9) 0%, rgba(0, 88, 165, .76) 52%, rgba(0, 88, 165, .34)), url("./assets/shnu-hero.png") center / cover; opacity: .92; }
 .challenge-banner::after { content: ""; position: absolute; right: -45px; bottom: -80px; width: 180px; height: 180px; border-radius: 50%; border: 34px solid rgba(255, 210, 46, 0.32); }
-.banner-copy { position: relative; z-index: 2; max-width: 246px; }
+.banner-copy { position: relative; z-index: 2; }
 .banner-copy h2 { margin: 8px 0 4px; font-size: 17px; line-height: 1.25; }
 .banner-copy p { margin: 0; color: #e2f7ff; font-size: 10px; }
-.time-badge { position: relative; z-index: 2; padding-top: 21px; text-align: right; }
-.time-badge b { display: block; font: 700 16px var(--mono); color: var(--yellow); }
-.time-badge span { font-size: 9px; color: #e2f7ff; }
 .banner-grid { position: absolute; inset: 0; opacity: .12; background-image: linear-gradient(rgba(255,255,255,.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.4) 1px, transparent 1px); background-size: 20px 20px; transform: rotate(-14deg) scale(1.25); }
 
 .map-card { overflow: hidden; margin-bottom: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); box-shadow: var(--shadow); }
@@ -181,7 +178,6 @@ svg { display: block; }
 .station-info span { display: block; margin-top: 3px; font-size: 9px; color: var(--muted); }
 .station-meta { text-align: right; }
 .station-meta b { display: block; font: 500 9px var(--mono); color: var(--green); }
-.station-meta span { display: block; margin-top: 4px; font-size: 9px; color: var(--muted); }
 
 .sticky-cta { position: absolute; z-index: 10; left: 0; right: 0; bottom: 68px; padding: 10px 14px 12px; background: linear-gradient(transparent, var(--paper) 26%); }
 .phone.detail-mode .sticky-cta { bottom: 0; padding-bottom: 16px; }

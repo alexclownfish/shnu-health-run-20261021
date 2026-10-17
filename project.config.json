@@ -1,7 +1,7 @@
 {
   "appid": "wx9d16b2e04851fc36",
   "projectname": "shnu-health-walk",
-  "description": "步履时光·健康同行微信小程序",
+  "description": "步履拾光·健康同行微信小程序",
   "miniprogramRoot": "miniprogram/",
   "cloudfunctionRoot": "cloudfunctions/",
   "compileType": "miniprogram",

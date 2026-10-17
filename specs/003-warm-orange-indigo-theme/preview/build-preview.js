@@ -29,7 +29,7 @@ const html = replaceLiteral(
     ),
     '/* PREVIEW_DATA */',
     `const previewData = ${JSON.stringify({
-    stations: stations.map(({ id, title, location, distance, sourceMarker, tag }) => ({ id, title, location, distance, sourceMarker, tag })),
+    stations: stations.map(({ id, title, location, sourceMarker, tag }) => ({ id, title, location, sourceMarker, tag })),
     points: route.getMapPoints(),
     segments: route.getMapSegments(),
     markers: route.getMapMarkers(),

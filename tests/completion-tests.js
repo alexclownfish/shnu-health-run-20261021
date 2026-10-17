@@ -169,6 +169,19 @@ test('successful client upload stores the returned participant id for the certif
   assert.deepEqual(state.savedParticipantIds, [recordId('walk-2026', 'participant').slice(0, 16)])
   assert.equal(state.storage[OUTBOX_KEY].length, 0)
 })
+test('activity title correction preserves the existing completion receipt without rewriting it', async () => {
+  const previous = activity({ activityId: 'health-run-2026-event02', title: '步履时光·健康同行' })
+  const corrected = { ...previous, title: '步履拾光·健康同行' }
+  const value = payload({ activityId: previous.activityId })
+  const repository = memoryRepository()
+  const first = await submit(value, identity(), previous, repository, NOW)
+  const originalRecords = clone([...repository.records.values()])
+  const retry = await submit(value, identity(), corrected, repository, NOW + 1)
+  assert.equal(retry.status, 'alreadyAccepted')
+  assert.equal(retry.participantId, first.participantId)
+  assert.equal(retry.receivedAt, first.receivedAt)
+  assert.deepEqual([...repository.records.values()], originalRecords)
+})
 test('successful response without participant id stays queued for a later cloud retry', async () => {
   const state = device()
   state.response = async () => ({ result: { ok: true, status: 'accepted' } })
@@ -192,6 +205,7 @@ test('certificate refresh waits for an upload already started by the app', async
     '../../utils/format': require('../miniprogram/utils/format'),
     '../../utils/progress': {
       isFinished: progressStore.isFinished,
+      deriveStats: progressStore.deriveStats,
       readProgress: () => ({ ...state.progress, participantId: state.savedParticipantIds[0] || '' })
     },
     '../../utils/user': { readUser: () => state.user },
@@ -491,6 +505,27 @@ test('export excludes wrong environment, developer, schema, route, identity and 
 test('export refuses unstable/repeated pagination instead of silently omitting people', async () => {
   await assert.rejects(() => collectRows(async () => [stored(), stored()], activity(), NOW, 2), /CURSOR/)
   await assert.rejects(() => collectRows(async () => null, activity(), NOW), /PAGE/)
+})
+test('corrected activity exports old and new title records using the corrected display name only', async () => {
+  const previous = activity({ activityId: 'health-run-2026-event02', title: '步履时光·健康同行' })
+  const corrected = { ...previous, title: '步履拾光·健康同行' }
+  const legacy = stored('before-correction', {}, previous)
+  const records = [legacy, stored('after-correction', {}, corrected),
+    stored('unrelated-title', { title: '其他活动' }, corrected)]
+  const result = await collectRows(fetcher(records), corrected, NOW)
+  assert.equal(result.rows.length, 2)
+  assert.equal(result.excluded, 1)
+  assert.deepEqual(collectLocalRows(records, corrected, NOW), result)
+  const workbook = new ExcelJS.Workbook()
+  await workbook.xlsx.load(await createWorkbook(result, corrected, NOW).xlsx.writeBuffer())
+  const sheet = workbook.getWorksheet('完赛名单')
+  assert.equal(sheet.getCell('B2').value, corrected.title)
+  assert.equal(sheet.getCell('B3').value, corrected.title)
+  assert.equal(legacy.title, previous.title)
+
+  const anotherActivity = activity({ title: corrected.title })
+  assert.equal(collectLocalRows([stored('another-activity', { title: previous.title }, anotherActivity)],
+    anotherActivity, NOW).rows.length, 0)
 })
 test('real XLSX roundtrip keeps formulas as text, Chinese, missing nickname and long duration', async () => {
   const config = activity()

@@ -67,7 +67,7 @@ function createWorkbook(result, config, cutoff, options = {}) {
   sheet.views = [{ state: 'frozen', ySplit: 1 }]
   result.rows.forEach((row, index) => sheet.addRow({
     number: index + 1,
-    title: String(row.title), activityId: String(row.activityId), routeVersion: String(row.routeVersion),
+    title: String(config.title), activityId: String(row.activityId), routeVersion: String(row.routeVersion),
     participantId: String(row.participantId), nickName: String(row.nickName || '未填写昵称'),
     startedAt: localTime(row.startedAt, timeZone), completedAt: localTime(row.completedAt, timeZone),
     duration: duration(row.durationMs), points: row.completedPointCodes.length,

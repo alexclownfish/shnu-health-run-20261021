@@ -1,5 +1,5 @@
 <view class="page profile-page">
-  <view class="page-heading"><text class="eyebrow">我的步履时光</text><text class="page-title">个人中心</text></view>
+  <view class="page-heading"><text class="eyebrow">我的步履拾光</text><text class="page-title">个人中心</text></view>
 
   <view class="profile-hero" bindtap="openProfileAuthorization">
     <view class="profile-avatar"><image wx:if="{{user.avatarUrl}}" src="{{user.avatarUrl}}" mode="aspectFill"></image><text wx:else>{{userInitial}}</text></view>

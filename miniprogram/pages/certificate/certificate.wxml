@@ -2,8 +2,8 @@
   <view wx:if="{{certificateReady}}" class="certificate card">
     <view class="certificate-top">
       <view class="decor decor-one"></view><view class="decor decor-two"></view>
-      <text class="certificate-code mono">步履时光 / 完赛凭证</text>
-      <text class="certificate-title">步履时光·健康同行</text>
+      <text class="certificate-code mono">步履拾光 / 完赛凭证</text>
+      <text class="certificate-title">步履拾光·健康同行</text>
       <text class="certificate-subtitle">完成实景健康路线</text>
       <view class="complete-seal">✓</view>
     </view>

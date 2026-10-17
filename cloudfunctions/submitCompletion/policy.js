@@ -96,9 +96,16 @@ function prepareRecord(payload, context, config, now = Date.now()) {
   }
 }
 
+function matchesActivityTitle(title, config) {
+  // Preserve existing records when correcting this activity's display name.
+  return title === config.title ||
+    (config.activityId === 'health-run-2026-event02' &&
+      config.title === '步履拾光·健康同行' && title === '步履时光·健康同行')
+}
+
 function validStoredRecord(record, config, cutoff) {
   if (!record || record.schemaVersion !== 1 || record.mode !== config.mode ||
-    record.environmentId !== config.environmentId || record.title !== config.title ||
+    record.environmentId !== config.environmentId || !matchesActivityTitle(record.title, config) ||
     typeof record.ownerOpenId !== 'string' || !record.ownerOpenId ||
     config.excludedOpenIds.includes(record.ownerOpenId) ||
     record._id !== recordId(config.activityId, record.ownerOpenId) ||

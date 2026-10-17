@@ -1,6 +1,6 @@
 <view class="page route-page with-fixed-action">
   <view class="route-heading">
-    <view><text class="eyebrow">上海师范大学教职工活动</text><text class="page-title">步履时光·健康同行</text></view>
+    <view><text class="eyebrow">上海师范大学教职工活动</text><text class="page-title">步履拾光·健康同行</text></view>
     <view class="profile-dot" bindtap="openProfileAuthorization"><image wx:if="{{user.avatarUrl}}" src="{{user.avatarUrl}}" mode="aspectFill"></image><text wx:else>{{userInitial}}</text></view>
   </view>
 
@@ -24,7 +24,6 @@
       <text class="challenge-title">{{totalDistance}} 公里实景健康漫步</text>
       <text class="challenge-desc">起点开始计时 · 3 次照片打卡 · 终点结束计时</text>
     </view>
-    <view class="challenge-time"><text>15–20</text><text>分钟</text></view>
   </view>
 
   <view class="route-card card">
@@ -56,7 +55,7 @@
     <view wx:for="{{stations}}" wx:key="id" class="station-card card {{item.done ? 'done' : ''}} {{item.locked ? 'locked' : ''}}" data-index="{{index}}" bindtap="handleStationTap">
       <view class="station-number">{{item.done ? '✓' : item.number}}</view>
       <view class="station-copy"><text>{{item.title}}</text><text>{{item.location}} · {{item.tag}}</text></view>
-      <view class="station-meta"><text>{{item.status}}</text><text>{{item.distance}}</text></view>
+      <view class="station-meta"><text>{{item.status}}</text></view>
     </view>
     <view class="station-card card endpoint-card {{finished ? 'done' : ''}} {{completed < 3 ? 'locked' : ''}}" bindtap="handleFinishTap">
       <view class="station-number">{{finished ? '✓' : '终'}}</view>

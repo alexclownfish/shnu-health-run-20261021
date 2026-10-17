@@ -55,7 +55,7 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .snapshot .page { min-height: 0; padding-bottom: 42px; }
 .snapshot .with-fixed-action { padding-bottom: 126px; }
 .snapshot .checkin-page { min-height: 690px; }
-.snapshot .route-heading, .snapshot .weather-copy, .snapshot .weather-score, .snapshot .challenge, .snapshot .challenge-copy, .snapshot .challenge-time, .snapshot .route-card-head,
+.snapshot .route-heading, .snapshot .weather-copy, .snapshot .weather-score, .snapshot .challenge, .snapshot .challenge-copy, .snapshot .route-card-head,
 .snapshot .map-hint, .snapshot .section-head, .snapshot .station-card, .snapshot .reader, .snapshot .reader-phone, .snapshot .reader-tag, .snapshot .status-line, .snapshot .checkin-actions,
 
 .snapshot .camera-prompt, .snapshot .photo-tips, .snapshot .privacy-row, .snapshot .checkbox, .snapshot .success-mark, .snapshot .assurance-note,
@@ -74,7 +74,7 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .snapshot .history-item,.snapshot .badge-grid,.snapshot .settings-list > view { display: grid; }
 .snapshot .certificate-meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 .snapshot .eyebrow,.snapshot .section-kicker,.snapshot .section-title,.snapshot .route-heading .page-title,.snapshot .page-title,.snapshot .challenge-code,
-.snapshot .challenge-title,.snapshot .challenge-desc,.snapshot .challenge-time text,.snapshot .weather-copy text,.snapshot .weather-score text,
+.snapshot .challenge-title,.snapshot .challenge-desc,.snapshot .weather-copy text,.snapshot .weather-score text,
 .snapshot .route-card-title,.snapshot .station-copy text,.snapshot .station-meta text,.snapshot .result-title,.snapshot .result-message,
 .snapshot .upload-title,.snapshot .upload-copy,.snapshot .camera-prompt text,
 .snapshot .photo-tips text,.snapshot .certificate-code,.snapshot .certificate-title,.snapshot .certificate-subtitle,.snapshot .certificate-owner,.snapshot .score text,
@@ -93,12 +93,10 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .has-tabs .home-indicator { display: none; }
 .snapshot .weather { grid-template-columns: 36px 1fr auto; gap: 9px; }
 .snapshot .challenge { background: var(--orange); min-height: 115px; }
-.snapshot .challenge-copy { min-width: 0; flex: 1; padding-right: 6px; }
-.snapshot .challenge-title { max-width: 225px; line-height: 1.45; }
+.snapshot .challenge-copy { min-width: 0; flex: 1; }
+.snapshot .challenge-title { line-height: 1.45; }
 .snapshot .challenge-code { color: var(--ink); }
-.snapshot .challenge-desc,.snapshot .challenge-time text:last-child { color: #2b2330; }
-.snapshot .challenge-time { flex-shrink: 0; }
-.snapshot .challenge-time text:first-child { color: var(--ink); }
+.snapshot .challenge-desc { color: #2b2330; }
 .snapshot .challenge-ring { border-color: #ffd34e35; }
 .snapshot .map { position: relative; background: #f2eee8; }
 .route-canvas { display: block; width: 100%; height: 100%; }
