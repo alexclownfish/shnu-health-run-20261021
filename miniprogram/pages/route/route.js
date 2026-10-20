@@ -25,14 +25,11 @@ Page({
   onLoad() {
     if (typeof setInterval === 'function') this.timer = setInterval(() => this.refreshTiming(), 1000)
     this.refreshProgress()
-    const user = userStore.readUser()
-    if (!userStore.isProfileComplete(user)) this.setData({ profileVisible: true })
   },
 
   onShow() {
     if (!this.timer && typeof setInterval === 'function') this.timer = setInterval(() => this.refreshTiming(), 1000)
     this.refreshProgress()
-    if (!userStore.isProfileComplete(userStore.readUser())) this.setData({ profileVisible: true })
   },
 
   onHide() {

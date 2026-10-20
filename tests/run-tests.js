@@ -157,7 +157,25 @@ run('app and route page initialize with a JS-only mini-program module loader', (
   assert.equal(page.data.totalDistance, '3.50')
   assert.equal(page.data.stations.length, 3)
   assert.equal(page.data.started, false)
-  assert.equal(page.data.profileVisible, true)
+  assert.equal(page.data.profileVisible, false)
+})
+
+run('opening the route does not prompt for a profile until check-in starts', () => {
+  const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+  const runtime = createPageRuntime('route')
+  try {
+    runtime.storage[userStore.KEY] = {}
+    runtime.page.onLoad()
+    runtime.page.onShow()
+    assert.equal(runtime.page.data.profileVisible, false, 'startup stays browsable without profile details')
+    assert.equal(runtime.calls.toasts.length, 0, 'startup does not show a profile toast')
+
+    runtime.page.openCheckin()
+    assert.equal(runtime.page.data.profileVisible, true, 'check-in entry still requires profile details')
+    assert.equal(runtime.calls.navigation.length, 0)
+  } finally {
+    runtime.cleanup()
+  }
 })
 
 run('route map and profile authorization components are registered', () => {
@@ -728,7 +746,7 @@ run('photo selection ignores a delayed callback after profile details become inc
   }
 })
 
-run('returning to an existing route, scanner, or photo page rechecks profile completeness', () => {
+run('returning to an existing route stays browsable while scanner and photo pages recheck profile completeness', () => {
   const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
   const { QR_TAGS } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
   for (const name of ['route', 'checkin', 'upload']) {
@@ -741,7 +759,7 @@ run('returning to an existing route, scanner, or photo page rechecks profile com
       runtime.storage[userStore.KEY] = { nickName: completeProfile.nickName }
       runtime.page.onShow()
       if (name === 'route') {
-        assert.equal(runtime.page.data.profileVisible, true)
+        assert.equal(runtime.page.data.profileVisible, false, 'route browsing does not force profile authorization')
         assert.equal(runtime.calls.navigation.length, 0)
       } else {
         assert.equal(runtime.calls.redirects.at(-1).url, '/pages/route/route')
