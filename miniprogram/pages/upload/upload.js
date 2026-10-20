@@ -1,6 +1,7 @@
 const stations = require('../../utils/stations')
 const progressStore = require('../../utils/progress')
 const photoService = require('../../utils/photo')
+const { requireCompleteProfile } = require('../../utils/profile-gate')
 
 Page({
   data: {
@@ -16,7 +17,8 @@ Page({
     continueLabel: '查看下一站'
   },
 
-  onLoad(options) {
+  onLoad(options = {}) {
+    if (!requireCompleteProfile(this)) return
     const stationIndex = Math.min(Math.max(Number(options.station) || 0, 0), 2)
     const progress = progressStore.readProgress()
     if (stationIndex !== progress.completed || !progressStore.canUpload(progress, stationIndex)) {
@@ -28,13 +30,19 @@ Page({
     this.setData({ stationIndex, station: stations[stationIndex] })
   },
 
+  onShow() {
+    requireCompleteProfile(this)
+  },
+
   choosePhoto() {
+    if (!requireCompleteProfile(this)) return
     wx.chooseMedia({
       count: 1,
       mediaType: ['image'],
       sourceType: ['album', 'camera'],
       sizeType: ['compressed'],
       success: (result) => {
+        if (!requireCompleteProfile(this)) return
         const file = result.tempFiles && result.tempFiles[0]
         if (!file) return
         if (file.size > 10 * 1024 * 1024) {
@@ -63,6 +71,7 @@ Page({
 
   submitPoint() {
     if (this.data.submitting) return
+    if (!requireCompleteProfile(this)) return
     if (!this.data.privacyAccepted) {
       wx.showToast({ title: '请先确认照片隐私设置', icon: 'none' })
       return
@@ -76,6 +85,10 @@ Page({
     this.setData({ submitting: true })
     photoService.saveCheckInPhoto(this.data.photoPath)
       .then((savedPath) => {
+      if (!requireCompleteProfile(this)) {
+        this.setData({ submitting: false })
+        return
+      }
       const progress = progressStore.completeStation(this.data.stationIndex, savedPath)
       if (progress.completed <= this.data.stationIndex) {
         this.setData({ submitting: false })

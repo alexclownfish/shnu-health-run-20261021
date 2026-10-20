@@ -8,7 +8,7 @@ function normalizeUser(value) {
   const source = value && typeof value === 'object' ? value : {}
   return {
     nickName: typeof source.nickName === 'string' ? source.nickName.trim() : '',
-    avatarUrl: typeof source.avatarUrl === 'string' ? source.avatarUrl : ''
+    avatarUrl: typeof source.avatarUrl === 'string' ? source.avatarUrl.trim() : ''
   }
 }
 

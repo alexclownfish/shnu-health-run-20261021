@@ -42,7 +42,7 @@ Component({
 
     confirm() {
       const nickName = (this.data.draftNickName || '').trim()
-      const avatarUrl = this.data.draftAvatarUrl || ''
+      const avatarUrl = (this.data.draftAvatarUrl || '').trim()
       if (!avatarUrl) {
         wx.showToast({ title: '请先选择微信头像', icon: 'none' })
         return

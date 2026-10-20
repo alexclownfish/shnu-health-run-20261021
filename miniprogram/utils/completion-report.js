@@ -51,21 +51,56 @@ function createReporter(options = {}) {
     return left && right && ['mode', 'envId', 'activityId', 'routeVersion'].every((key) => left[key] === right[key])
   }
 
-  function enqueue(value = getProgress()) {
-    const active = context()
+  function completion(value, active) {
     const bound = value && value.reportingContext
-    if (!active || !sameTarget(active, bound) || !finished(value)) return false
+    if (!active || !sameTarget(active, bound) || !finished(value)) return null
     // Never relabel an old develop/trial run as a production run after upgrading.
-    if ((bound.clientEnvVersion === 'release') !== (active.clientEnvVersion === 'release')) return false
+    if ((bound.clientEnvVersion === 'release') !== (active.clientEnvVersion === 'release')) return null
     const points = QR_TAGS.filter((item) => item.checkpointType === 'station').sort((a, b) => a.stationIndex - b.stationIndex)
     if (!points.every((item) => {
       const checkin = value.checkins && value.checkins[String(item.stationIndex)]
       return checkin && checkin.pointCode === item.pointCode && checkin.qrId === item.qrId &&
         value.photos && value.photos[String(item.stationIndex)]
-    })) return false
+    })) return null
     const key = JSON.stringify([bound.envId, bound.activityId, bound.routeVersion, value.startedAt])
+    return { bound, points, key }
+  }
+
+  function profileNickname() {
+    const user = userStore.normalizeUser(getUser())
+    return userStore.isProfileComplete(user) ? user.nickName.slice(0, 80) : ''
+  }
+
+  function hasNickname(payload) {
+    return payload && typeof payload.nickName === 'string' && Boolean(payload.nickName.trim())
+  }
+
+  function repairNickname(entry, snapshot, nickName) {
+    if (!entry || !snapshot || !nickName || entry.key !== snapshot.key ||
+      !sameTarget(entry.target, snapshot.bound) || !entry.payload || hasNickname(entry.payload) ||
+      !['pending', 'blocked'].includes(entry.status)) return false
+    // Only repair the missing name of this local finish; keep its frozen evidence and target.
+    entry.payload.nickName = nickName
+    if (entry.status === 'blocked' && entry.reasonCode === 'INVALID_PAYLOAD') {
+      entry.status = 'pending'
+      entry.nextAttemptAt = 0
+      delete entry.reasonCode
+    }
+    return true
+  }
+
+  function enqueue(value = getProgress()) {
+    const snapshot = completion(value, context())
+    if (!snapshot) return false
+    const { bound, points, key } = snapshot
     const entries = queue()
-    if (entries.some((entry) => entry.key === key)) return true
+    const existing = entries.find((entry) => entry && entry.key === key)
+    if (existing) {
+      if (!hasNickname(existing.payload) && repairNickname(existing, snapshot, profileNickname())) save(entries)
+      return Boolean(hasNickname(existing.payload))
+    }
+    const nickName = profileNickname()
+    if (!nickName) return false
     entries.push({
       key,
       target: { ...bound },
@@ -76,7 +111,7 @@ function createReporter(options = {}) {
         activityId: bound.activityId,
         routeVersion: bound.routeVersion,
         clientEnvVersion: bound.clientEnvVersion,
-        nickName: (getUser().nickName || '').slice(0, 80),
+        nickName,
         startedAt: value.startedAt,
         completedAt: value.completedAt,
         completedPointCodes: points.map((item) => item.pointCode),
@@ -108,6 +143,14 @@ function createReporter(options = {}) {
       // operator aligns the cloud config, allow that frozen record to be sent again.
       const entriesBeforeFlush = queue()
       let recovered = false
+      if (entriesBeforeFlush.some((entry) => entry && sameTarget(entry.target, active) &&
+        ['pending', 'blocked'].includes(entry.status) && !hasNickname(entry.payload))) {
+        const snapshot = completion(getProgress(), active)
+        const nickName = snapshot ? profileNickname() : ''
+        entriesBeforeFlush.forEach((entry) => {
+          if (repairNickname(entry, snapshot, nickName)) recovered = true
+        })
+      }
       entriesBeforeFlush.forEach((entry) => {
         if (entry && sameTarget(entry.target, active) && entry.status === 'blocked' &&
           entry.reasonCode === 'ACTIVITY_NOT_ALLOWED') {
@@ -120,7 +163,7 @@ function createReporter(options = {}) {
 
       // Select one immutable item at a time; reload before saving to preserve newly queued finishes.
       const eligible = queue().filter((entry) => entry && sameTarget(entry.target, active) &&
-        entry.status === 'pending' && entry.nextAttemptAt <= now())
+        entry.status === 'pending' && hasNickname(entry.payload) && entry.nextAttemptAt <= now())
       for (const entry of eligible) {
         let result
         try {

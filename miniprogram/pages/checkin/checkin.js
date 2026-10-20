@@ -3,6 +3,7 @@ const progressStore = require('../../utils/progress')
 const qrValidation = require('../../utils/qr-validation')
 const { QR_TAGS } = require('../../utils/qr-tags')
 const completionReport = require('../../utils/completion-report')
+const { requireCompleteProfile } = require('../../utils/profile-gate')
 
 const REASON_CONTENT = {
   NO_CURRENT_STATION: ['暂无待打卡点位', '路线可能已经完成，请返回路线页查看当前进度。'],
@@ -42,6 +43,7 @@ Page({
 
   onShow() {
     this.pageActive = true
+    if (!requireCompleteProfile(this)) return
     if (this.accepted) {
       this.scheduleNavigation()
       return
@@ -75,6 +77,21 @@ Page({
 
   initializeContext() {
     this.stopPending()
+    this.expectedCheckpointType = null
+    this.expectedStationIndex = null
+    if (!requireCompleteProfile(this)) {
+      this.setData({
+        state: 'PROFILE_REQUIRED',
+        statusLabel: '请先完善资料',
+        title: '填写头像和昵称后再打卡',
+        message: '请返回路线页完善微信资料。',
+        showPrimary: false,
+        showRetry: false,
+        showRoute: true,
+        success: false
+      })
+      return
+    }
     const progress = progressStore.readProgress()
     const checkpoint = progressStore.getCurrentCheckpoint(progress)
     this.expectedStationIndex = null
@@ -135,6 +152,7 @@ Page({
 
   startQrScan() {
     if (this.accepted || this.qrScanActive || this.pageUnloaded || !this.pageActive) return
+    if (!requireCompleteProfile(this)) return
     this.initializeContext()
     if (this.expectedCheckpointType === 'station' && !Number.isInteger(this.expectedStationIndex)) return
     if (!this.expectedCheckpointType) return
@@ -199,6 +217,7 @@ Page({
 
   handleValidationResult(result, attemptId) {
     if (!this.pageActive || this.accepted || attemptId !== this.attemptId) return
+    if (!requireCompleteProfile(this)) return
     if (!result.ok) {
       this.showRejected(result.reasonCode, result.retryable)
       return

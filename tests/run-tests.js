@@ -23,6 +23,73 @@ function run(label, callback) {
   }
 }
 
+function createPageRuntime(name) {
+  const file = path.join(miniRoot, 'pages', name, `${name}.js`)
+  const previous = { wx: global.wx, Page: global.Page, getApp: global.getApp }
+  const storage = {}
+  const calls = { navigation: [], redirects: [], toasts: [], scans: [], photos: [], saves: [] }
+  const app = { globalData: {} }
+  let definition
+  global.wx = {
+    getStorageSync: (key) => storage[key],
+    setStorageSync: (key, value) => { storage[key] = value },
+    navigateTo: (options) => calls.navigation.push(options),
+    switchTab: (options) => calls.redirects.push(options),
+    redirectTo: (options) => calls.navigation.push(options),
+    showToast: (options) => calls.toasts.push(options),
+    vibrateShort: () => {},
+    scanCode: (options) => calls.scans.push(options),
+    chooseMedia: (options) => calls.photos.push(options),
+    saveFile: (options) => calls.saves.push(options)
+  }
+  global.getApp = () => app
+  global.Page = (value) => { definition = value }
+  delete require.cache[require.resolve(file)]
+  require(file)
+  const page = {
+    ...definition,
+    data: JSON.parse(JSON.stringify(definition.data)),
+    setData(update) { Object.assign(this.data, update) }
+  }
+  return {
+    page, storage, calls, app,
+    cleanup() {
+      if (typeof page.onUnload === 'function') page.onUnload()
+      global.wx = previous.wx
+      global.Page = previous.Page
+      global.getApp = previous.getApp
+      delete require.cache[require.resolve(file)]
+    }
+  }
+}
+
+function prepareCheckpoint(type) {
+  const progress = require(path.join(miniRoot, 'utils', 'progress.js'))
+  const { QR_TAGS } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
+  const at = Date.now() - 1000
+  progress.resetProgress()
+  if (type !== 'start') {
+    progress.startCheckIn({ ...QR_TAGS[0], assurance: 'LOCAL_QR_MATCH', observedAt: at })
+  }
+  if (type === 'finish') {
+    for (let index = 0; index < 3; index += 1) {
+      progress.checkInStation(index, 'qr-code', { ...QR_TAGS[index + 1], assurance: 'LOCAL_QR_MATCH', observedAt: at })
+      progress.completeStation(index, `wxfile://point-${index}.jpg`)
+    }
+  }
+  return progress
+}
+
+const completeProfile = { nickName: '测试参与者', avatarUrl: 'wxfile://avatar.jpg' }
+const incompleteProfiles = [
+  undefined,
+  {},
+  { nickName: '测试参与者' },
+  { avatarUrl: 'wxfile://avatar.jpg' },
+  { nickName: ' \t ', avatarUrl: 'wxfile://avatar.jpg' },
+  { nickName: '测试参与者', avatarUrl: ' \n ' }
+]
+
 run('project config points to miniprogram root', () => {
   const config = readJson(path.join(root, 'project.config.json'))
   assert.equal(config.miniprogramRoot, 'miniprogram/')
@@ -421,7 +488,8 @@ run('check-in page exposes one platform-neutral QR action', () => {
 run('QR result survives the native scanner temporarily hiding the page', () => {
   const checkinPath = path.join(miniRoot, 'pages', 'checkin', 'checkin.js')
   const { QR_TAGS } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
-  const storage = {}
+  const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+  const storage = { [userStore.KEY]: completeProfile }
   let pageDefinition
   let scanOptions
   global.Page = (definition) => { pageDefinition = definition }
@@ -495,11 +563,193 @@ run('completion certificate renders and saves a local album image', () => {
 
 run('user profile storage normalizes WeChat data', () => {
   const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
-  const user = userStore.saveUser({ nickName: '  小跑  ', avatarUrl: 'wxfile://avatar.png' })
+  const user = userStore.saveUser({ nickName: '  小跑  ', avatarUrl: '  wxfile://avatar.png  ' })
   assert.equal(user.nickName, '小跑')
   assert.equal(userStore.readUser().avatarUrl, 'wxfile://avatar.png')
   assert.equal(userStore.isProfileComplete(user), true)
   assert.equal(userStore.isProfileComplete({ nickName: '小跑', avatarUrl: '' }), false)
+  for (const profile of incompleteProfiles) assert.equal(userStore.isProfileComplete(profile), false)
+})
+
+run('every available route check-in entry requires both nickname and avatar', () => {
+  const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+  const entries = [
+    ['start', (page) => page.openCheckin()],
+    ['start', (page) => page.handleStart()],
+    ['start', (page) => page.handleStartTap()],
+    ['station', (page) => page.handleStationTap({ currentTarget: { dataset: { index: 0 } } })],
+    ['finish', (page) => page.handleFinishTap()]
+  ]
+  for (const profile of incompleteProfiles) {
+    for (const [checkpointType, enter] of entries) {
+      const runtime = createPageRuntime('route')
+      try {
+        runtime.storage[userStore.KEY] = profile
+        const progress = prepareCheckpoint(checkpointType)
+        const before = JSON.stringify(progress.readProgress())
+        runtime.page.refreshProgress()
+        enter(runtime.page)
+        assert.equal(runtime.page.data.profileVisible, true, `${checkpointType} prompts for profile`)
+        assert.equal(runtime.calls.navigation.length, 0, 'cannot open scanner without a complete profile')
+        runtime.page.closeProfileAuthorization()
+        enter(runtime.page)
+        assert.equal(runtime.page.data.profileVisible, true, 'closing the prompt does not bypass the prerequisite')
+        assert.equal(runtime.calls.navigation.length, 0)
+        assert.equal(JSON.stringify(progress.readProgress()), before)
+      } finally {
+        runtime.cleanup()
+      }
+    }
+  }
+})
+
+run('route rejects incomplete profile saves and opens check-in after valid details are saved', () => {
+  const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+  const runtime = createPageRuntime('route')
+  try {
+    runtime.page.openCheckin()
+    for (const profile of incompleteProfiles) {
+      runtime.page.saveAuthorizedProfile({ detail: { user: profile } })
+      assert.equal(runtime.page.data.profileVisible, true)
+      assert.equal(userStore.isProfileComplete(userStore.readUser()), false)
+      assert.equal(runtime.calls.navigation.length, 0)
+    }
+    runtime.page.saveAuthorizedProfile({ detail: { user: completeProfile } })
+    assert.equal(runtime.page.data.profileVisible, false)
+    assert.equal(userStore.isProfileComplete(userStore.readUser()), true)
+    assert.equal(runtime.app.globalData.user.nickName, completeProfile.nickName)
+    runtime.page.openCheckin()
+    assert.equal(runtime.calls.navigation.at(-1).url, '/pages/checkin/checkin')
+  } finally {
+    runtime.cleanup()
+  }
+})
+
+run('direct scanner entry cannot scan or write checkpoint progress without a complete profile', () => {
+  const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+  const { QR_TAGS } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
+  const qrValidation = require(path.join(miniRoot, 'utils', 'qr-validation.js'))
+  for (const profile of incompleteProfiles) {
+    for (const [type, tagIndex] of [['start', 0], ['station', 1], ['finish', 4]]) {
+      const runtime = createPageRuntime('checkin')
+      try {
+        runtime.storage[userStore.KEY] = profile
+        const progress = prepareCheckpoint(type)
+        const before = JSON.stringify(progress.readProgress())
+        runtime.page.onLoad()
+        runtime.page.onShow()
+        runtime.page.startQrScan()
+        assert.equal(runtime.calls.scans.length, 0)
+        const result = qrValidation.validateQrResult({
+          expectedCheckpointType: type,
+          expectedStationIndex: type === 'station' ? 0 : null,
+          result: { result: QR_TAGS[tagIndex].payload },
+          qrTags: QR_TAGS
+        })
+        assert.equal(result.ok, true)
+        runtime.page.handleValidationResult(result, runtime.page.attemptId)
+        assert.equal(JSON.stringify(progress.readProgress()), before, `${type} checkpoint remains unchanged`)
+        assert.equal(runtime.page.accepted, false)
+        assert.equal(runtime.calls.redirects.length, 1, 'repeated guards share one pending profile redirect')
+        assert.equal(runtime.calls.redirects[0].url, '/pages/route/route')
+      } finally {
+        runtime.cleanup()
+      }
+    }
+  }
+})
+
+run('scanner rechecks profile after the asynchronous QR result before any checkpoint write', () => {
+  const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+  const { QR_TAGS } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
+  for (const [type, tagIndex] of [['start', 0], ['station', 1], ['finish', 4]]) {
+    const runtime = createPageRuntime('checkin')
+    try {
+      runtime.storage[userStore.KEY] = completeProfile
+      const progress = prepareCheckpoint(type)
+      const before = JSON.stringify(progress.readProgress())
+      runtime.page.onLoad()
+      runtime.page.startQrScan()
+      assert.equal(runtime.calls.scans.length, 1, `${type} scanner opens with complete details`)
+      delete runtime.storage[userStore.KEY]
+      runtime.calls.scans[0].success({ result: QR_TAGS[tagIndex].payload })
+      assert.equal(JSON.stringify(progress.readProgress()), before)
+      assert.equal(runtime.page.accepted, false)
+      assert.equal(runtime.calls.redirects.at(-1).url, '/pages/route/route')
+    } finally {
+      runtime.cleanup()
+    }
+  }
+})
+
+run('photo page requires complete details for deep links, returning, choosing, and saving', () => {
+  const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+  const { QR_TAGS } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
+  for (const profile of incompleteProfiles) {
+    const runtime = createPageRuntime('upload')
+    try {
+      const progress = prepareCheckpoint('station')
+      progress.checkInStation(0, 'qr-code', { ...QR_TAGS[1], assurance: 'LOCAL_QR_MATCH', observedAt: Date.now() })
+      const before = JSON.stringify(progress.readProgress())
+      runtime.storage[userStore.KEY] = profile
+      runtime.page.onLoad({ station: '0' })
+      runtime.page.onShow()
+      runtime.page.choosePhoto()
+      runtime.page.setData({ photoPath: 'wxfile://photo.jpg' })
+      runtime.page.submitPoint()
+      assert.equal(runtime.calls.photos.length, 0)
+      assert.equal(runtime.calls.saves.length, 0)
+      assert.equal(runtime.calls.redirects.at(-1).url, '/pages/route/route')
+      assert.equal(JSON.stringify(progress.readProgress()), before)
+    } finally {
+      runtime.cleanup()
+    }
+  }
+})
+
+run('photo selection ignores a delayed callback after profile details become incomplete', () => {
+  const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+  const { QR_TAGS } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
+  const runtime = createPageRuntime('upload')
+  try {
+    runtime.storage[userStore.KEY] = completeProfile
+    const progress = prepareCheckpoint('station')
+    progress.checkInStation(0, 'qr-code', { ...QR_TAGS[1], assurance: 'LOCAL_QR_MATCH', observedAt: Date.now() })
+    runtime.page.onLoad({ station: '0' })
+    runtime.page.choosePhoto()
+    assert.equal(runtime.calls.photos.length, 1)
+    delete runtime.storage[userStore.KEY]
+    runtime.calls.photos[0].success({ tempFiles: [{ tempFilePath: 'wxfile://photo.jpg', size: 1000 }] })
+    assert.equal(runtime.page.data.photoPath, '')
+    assert.equal(progress.readProgress().completed, 0)
+    assert.equal(runtime.calls.redirects.at(-1).url, '/pages/route/route')
+  } finally {
+    runtime.cleanup()
+  }
+})
+
+run('returning to an existing route, scanner, or photo page rechecks profile completeness', () => {
+  const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+  const { QR_TAGS } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
+  for (const name of ['route', 'checkin', 'upload']) {
+    const runtime = createPageRuntime(name)
+    try {
+      runtime.storage[userStore.KEY] = completeProfile
+      const progress = prepareCheckpoint('station')
+      progress.checkInStation(0, 'qr-code', { ...QR_TAGS[1], assurance: 'LOCAL_QR_MATCH', observedAt: Date.now() })
+      runtime.page.onLoad({ station: '0' })
+      runtime.storage[userStore.KEY] = { nickName: completeProfile.nickName }
+      runtime.page.onShow()
+      if (name === 'route') {
+        assert.equal(runtime.page.data.profileVisible, true)
+        assert.equal(runtime.calls.navigation.length, 0)
+      } else {
+        assert.equal(runtime.calls.redirects.at(-1).url, '/pages/route/route')
+      }
+    } finally {
+      runtime.cleanup()
+    }
+  }
 })
 
 run('calendar uses real month boundaries and activity dates', () => {
@@ -660,6 +910,39 @@ async function runAsync(label, callback) {
 }
 
 async function runAsyncTests() {
+  await runAsync('photo save callback rechecks profile before completing a point and permits valid completion', async () => {
+    const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+    const { QR_TAGS } = require(path.join(miniRoot, 'utils', 'qr-tags.js'))
+    const runtime = createPageRuntime('upload')
+    try {
+      runtime.storage[userStore.KEY] = completeProfile
+      const progress = prepareCheckpoint('station')
+      progress.checkInStation(0, 'qr-code', { ...QR_TAGS[1], assurance: 'LOCAL_QR_MATCH', observedAt: Date.now() })
+      const before = JSON.stringify(progress.readProgress())
+      runtime.page.onLoad({ station: '0' })
+      runtime.page.setData({ photoPath: 'wxfile://photo.jpg' })
+      runtime.page.submitPoint()
+      assert.equal(runtime.calls.saves.length, 1, 'valid profile can begin saving')
+      delete runtime.storage[userStore.KEY]
+      runtime.calls.saves[0].success({ savedFilePath: 'wxfile://saved-photo.jpg' })
+      await new Promise((resolve) => setImmediate(resolve))
+      assert.equal(JSON.stringify(progress.readProgress()), before, 'removed details cannot complete a point asynchronously')
+      assert.equal(runtime.page.data.submitting, false)
+      assert.equal(runtime.page.data.successVisible, false)
+      assert.equal(runtime.calls.redirects.at(-1).url, '/pages/route/route')
+
+      runtime.storage[userStore.KEY] = completeProfile
+      runtime.page.submitPoint()
+      assert.equal(runtime.calls.saves.length, 2)
+      runtime.calls.saves[1].success({ savedFilePath: 'wxfile://saved-photo.jpg' })
+      await new Promise((resolve) => setImmediate(resolve))
+      assert.equal(progress.readProgress().completed, 1)
+      assert.equal(progress.readProgress().photos['0'], 'wxfile://saved-photo.jpg')
+      assert.equal(runtime.page.data.successVisible, true)
+    } finally {
+      runtime.cleanup()
+    }
+  })
   console.log(`\n${pages.length} pages checked; native mini program structure is ready for DevTools.`)
 }
 

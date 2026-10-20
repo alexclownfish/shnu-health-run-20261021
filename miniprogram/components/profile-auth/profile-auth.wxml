@@ -2,7 +2,7 @@
   <view class="auth-sheet" catchtap="preventClose">
     <view class="sheet-handle"></view>
     <view class="auth-heading">
-      <view><text class="auth-title">微信资料</text><text class="auth-copy">用于凭证及活动开启后的完赛名单</text></view>
+      <view><text class="auth-title">完善微信资料</text><text class="auth-copy">填写头像和昵称后才能打卡，用于凭证及完赛名单</text></view>
       <button class="later-button" bindtap="close">稍后</button>
     </view>
 

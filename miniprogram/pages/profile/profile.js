@@ -41,7 +41,12 @@ Page({
   },
 
   saveAuthorizedProfile(event) {
-    const user = userStore.saveUser(event.detail && event.detail.user)
+    const draft = event.detail && event.detail.user
+    if (!userStore.isProfileComplete(draft)) {
+      wx.showToast({ title: '请填写完整头像和昵称', icon: 'none' })
+      return
+    }
+    const user = userStore.saveUser(draft)
     getApp().globalData.user = user
     this.setData({
       user,
@@ -80,7 +85,7 @@ Page({
   showHelp() {
     wx.showModal({
       title: '打卡流程',
-      content: '先扫描起点开始计时，再依次扫描三个任务点并拍照上传；最后扫描终点结束计时并生成凭证。',
+      content: '先填写头像和昵称，再扫描起点开始计时，依次扫描三个任务点并拍照保存；最后扫描终点结束计时并生成凭证。',
       showCancel: false,
       confirmColor: '#5664C2'
     })

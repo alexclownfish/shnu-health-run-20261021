@@ -32,6 +32,7 @@ Page({
   onShow() {
     if (!this.timer && typeof setInterval === 'function') this.timer = setInterval(() => this.refreshTiming(), 1000)
     this.refreshProgress()
+    if (!userStore.isProfileComplete(userStore.readUser())) this.setData({ profileVisible: true })
   },
 
   onHide() {
@@ -128,7 +129,12 @@ Page({
   },
 
   saveAuthorizedProfile(event) {
-    const user = userStore.saveUser(event.detail && event.detail.user)
+    const draft = event.detail && event.detail.user
+    if (!userStore.isProfileComplete(draft)) {
+      wx.showToast({ title: '请填写完整头像和昵称', icon: 'none' })
+      return
+    }
+    const user = userStore.saveUser(draft)
     getApp().globalData.user = user
     this.setData({
       user,
@@ -181,6 +187,12 @@ Page({
   },
 
   openCheckin() {
+    const user = userStore.readUser()
+    if (!userStore.isProfileComplete(user)) {
+      this.setData({ user, profileVisible: true })
+      wx.showToast({ title: '请先填写头像和昵称', icon: 'none' })
+      return
+    }
     wx.navigateTo({ url: '/pages/checkin/checkin' })
   },
 

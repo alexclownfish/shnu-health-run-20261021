@@ -39,7 +39,7 @@ function validatePayload(value, config, now) {
   }
   const expectedVersions = config.mode === 'production' ? ['release'] : ['develop', 'trial']
   if (!expectedVersions.includes(payload.clientEnvVersion)) return reject('BUILD_NOT_ALLOWED')
-  if (typeof payload.nickName !== 'string' || payload.nickName.length > 80 ||
+  if (typeof payload.nickName !== 'string' || !payload.nickName.trim() || payload.nickName.length > 80 ||
     !timestamp(payload.startedAt) || !timestamp(payload.completedAt) ||
     payload.completedAt < payload.startedAt ||
     payload.startedAt < config.startsAt || payload.completedAt > config.endsAt ||

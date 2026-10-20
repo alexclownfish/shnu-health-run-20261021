@@ -141,6 +141,14 @@ test('production rejects test builds, wrong activity, route or point sequence', 
     { completedPointCodes: ['001', '002'] }, { startPointCode: '001' }, { nickName: 'x'.repeat(81) }
   ]) assert.equal(prepareRecord(payload(changes), identity(), activity(), NOW).ok, false)
 })
+test('server refuses absent, empty or whitespace nicknames before storing a finisher', async () => {
+  for (const nickName of [undefined, null, 123, '', ' \t\n ', '\u3000']) {
+    const repository = memoryRepository()
+    const result = await submit(payload({ nickName }), identity(), activity(), repository, NOW)
+    assert.equal(result.reasonCode, 'INVALID_PAYLOAD')
+    assert.equal(repository.records.size, 0)
+  }
+})
 test('event bounds, future clock and reporting deadline reject invalid times', () => {
   for (const changes of [
     { startedAt: START - 1 }, { completedAt: START }, { completedAt: NOW + 30001 },
@@ -341,6 +349,105 @@ test('old certificates and incomplete task/photo evidence never enqueue', async 
   await state.client.flush()
   assert.equal(state.calls.length, 0)
 })
+test('new completion requires both a normalized nickname and avatar before queueing or cloud upload', async () => {
+  for (const user of [null, {}, { nickName: '参与者', avatarUrl: '' },
+    { nickName: '参与者', avatarUrl: ' \t ' }, { nickName: '', avatarUrl: 'avatar.jpg' },
+    { nickName: ' \n\u3000 ', avatarUrl: 'avatar.jpg' }]) {
+    const state = device()
+    state.user = user
+    assert.equal(state.client.enqueue(), false)
+    await state.client.report(state.progress)
+    assert.equal(state.storage[OUTBOX_KEY], undefined)
+    assert.equal(state.calls.length, 0)
+  }
+})
+test('client normalizes and limits the frozen nickname without uploading the avatar', async () => {
+  const state = device()
+  state.user = { nickName: `  ${'小'.repeat(81)}  `, avatarUrl: 'private-avatar.jpg' }
+  assert.equal(state.client.enqueue(), true)
+  const frozen = clone(state.storage[OUTBOX_KEY][0])
+  assert.equal(frozen.payload.nickName, '小'.repeat(80))
+  state.user = { nickName: '稍后修改', avatarUrl: 'another-avatar.jpg' }
+  assert.equal(state.client.enqueue(), true)
+  assert.deepEqual(state.storage[OUTBOX_KEY][0], frozen)
+  await state.client.flush()
+  assert.equal(state.calls[0].data.nickName, '小'.repeat(80))
+  assert.deepEqual(Object.keys(state.calls[0].data).sort(), Object.keys(payload()).sort())
+  assert.ok(!JSON.stringify(state.calls[0]).includes('avatar'))
+})
+test('legacy blank-name pending and invalid-payload queues wait for a complete profile, then repair only the name', async () => {
+  for (const status of ['pending', 'blocked']) {
+    const state = device()
+    state.client.enqueue()
+    const entry = state.storage[OUTBOX_KEY][0]
+    entry.payload.nickName = ' \t\n '
+    entry.status = status
+    entry.attempts = 3
+    if (status === 'blocked') {
+      entry.reasonCode = 'INVALID_PAYLOAD'
+      entry.nextAttemptAt = NOW + 3600000
+    }
+    const frozen = clone(entry)
+    state.user = { nickName: '补齐的昵称', avatarUrl: '' }
+    await state.client.flush()
+    assert.equal(state.calls.length, 0)
+    assert.deepEqual(state.storage[OUTBOX_KEY][0], frozen)
+    state.user = { nickName: '  补齐的昵称  ', avatarUrl: 'private-avatar.jpg' }
+    state.response = async () => {
+      const repaired = state.storage[OUTBOX_KEY][0]
+      assert.deepEqual(repaired.target, frozen.target)
+      assert.equal(repaired.attempts, frozen.attempts)
+      assert.equal(repaired.status, 'pending')
+      return { result: { ok: true, status: 'accepted', participantId: 'repaired-finisher' } }
+    }
+    await state.client.flush()
+    assert.equal(state.calls.length, 1)
+    assert.deepEqual(state.calls[0].data, { ...frozen.payload, nickName: '补齐的昵称' })
+    assert.equal(state.calls[0].config.env, frozen.target.envId)
+    assert.equal(state.storage[OUTBOX_KEY].length, 0)
+  }
+})
+test('report can repair a legacy blank nickname for the same completed run without creating a duplicate', async () => {
+  const state = device()
+  state.client.enqueue()
+  const entry = state.storage[OUTBOX_KEY][0]
+  entry.payload.nickName = ''
+  entry.status = 'blocked'
+  entry.reasonCode = 'INVALID_PAYLOAD'
+  const frozenPayload = clone(entry.payload)
+  state.user = { nickName: '  完整资料  ', avatarUrl: 'avatar.jpg' }
+  assert.equal(state.client.enqueue(), true)
+  assert.equal(state.storage[OUTBOX_KEY].length, 1)
+  assert.deepEqual(state.storage[OUTBOX_KEY][0].payload, { ...frozenPayload, nickName: '完整资料' })
+  assert.equal(state.storage[OUTBOX_KEY][0].status, 'pending')
+  await state.client.flush()
+  assert.equal(state.calls.length, 1)
+})
+test('legacy blank-name queues remain intact when the current finish no longer matches', async () => {
+  for (const changed of [
+    () => progressStore.defaultProgress(),
+    (value) => ({ ...value, startedAt: value.startedAt + 1000 })
+  ]) {
+    const state = device()
+    state.client.enqueue()
+    state.storage[OUTBOX_KEY][0].payload.nickName = ''
+    const frozen = clone(state.storage[OUTBOX_KEY][0])
+    state.progress = changed(state.progress)
+    await state.client.flush()
+    assert.equal(state.calls.length, 0)
+    assert.deepEqual(state.storage[OUTBOX_KEY][0], frozen)
+  }
+})
+test('valid frozen completion still uploads after the current profile has been cleared', async () => {
+  const state = device()
+  state.client.enqueue()
+  state.user = { nickName: '', avatarUrl: '' }
+  state.progress = progressStore.defaultProgress()
+  await state.client.flush()
+  assert.equal(state.calls.length, 1)
+  assert.equal(state.calls[0].data.nickName, '原昵称')
+  assert.equal(state.storage[OUTBOX_KEY].length, 0)
+})
 test('client freezes minimal summary once, including original nickname and times', () => {
   const state = device()
   assert.equal(state.client.enqueue(), true)
@@ -527,7 +634,7 @@ test('corrected activity exports old and new title records using the corrected d
   assert.equal(collectLocalRows([stored('another-activity', { title: previous.title }, anotherActivity)],
     anotherActivity, NOW).rows.length, 0)
 })
-test('real XLSX roundtrip keeps formulas as text, Chinese, missing nickname and long duration', async () => {
+test('real XLSX roundtrip keeps formulas as text, Chinese and long duration while excluding missing nicknames', async () => {
   const config = activity()
   const late = START + 25 * 3600000 + 60000
   const records = [
@@ -539,15 +646,17 @@ test('real XLSX roundtrip keeps formulas as text, Chinese, missing nickname and 
   const loaded = new ExcelJS.Workbook()
   await loaded.xlsx.load(await createWorkbook(result, config, late).xlsx.writeBuffer())
   const sheet = loaded.getWorksheet('完赛名单')
-  assert.equal(sheet.rowCount, 4)
-  const nicknames = [2, 3, 4].map((row) => sheet.getCell(`F${row}`).value)
-  assert.ok(nicknames.includes('小李') && nicknames.includes('未填写昵称'))
+  assert.equal(result.excluded, 1)
+  assert.equal(sheet.rowCount, 3)
+  const nicknames = [2, 3].map((row) => sheet.getCell(`F${row}`).value)
+  assert.ok(nicknames.includes('小李'))
+  assert.ok(!nicknames.includes('未填写昵称'))
   assert.ok(nicknames.includes('=HYPERLINK("https://example.com")'))
-  for (const row of [2, 3, 4]) assert.equal(sheet.getCell(`F${row}`).type, ExcelJS.ValueType.String)
-  assert.ok([2, 3, 4].some((row) => sheet.getCell(`I${row}`).value === '25:00:00'))
+  for (const row of [2, 3]) assert.equal(sheet.getCell(`F${row}`).type, ExcelJS.ValueType.String)
+  assert.ok([2, 3].some((row) => sheet.getCell(`I${row}`).value === '25:00:00'))
   assert.equal(duration(100 * 3600000), '100:00:00')
   assert.ok(!JSON.stringify(sheet.getSheetValues()).includes('ownerOpenId'))
-  assert.equal(loaded.getWorksheet('导出说明').getCell('B5').value, 3)
+  assert.equal(loaded.getWorksheet('导出说明').getCell('B5').value, 2)
 })
 test('empty export still produces headers and test workbook identifies test data', async () => {
   const result = await collectRows(fetcher([]), activity(), NOW)
