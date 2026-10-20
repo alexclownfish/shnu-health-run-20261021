@@ -7,14 +7,14 @@ const stations = [
     success: "照片已上传，继续沿路线前往下一站。",
   },
   {
-    title: "途中站：趣味翻翻乐",
+    title: "途中站：快乐燃动锤",
     location: "B 点 · 途中站",
     tag: "第二打卡点",
 
     success: "照片已上传，还剩最后一个点位。",
   },
   {
-    title: "终点站：快乐燃动锤",
+    title: "终点站：趣味翻翻乐",
     location: "C 点 · 终点站",
     tag: "第三打卡点",
 

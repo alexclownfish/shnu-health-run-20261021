@@ -222,8 +222,10 @@ run('KMZ segments and exact photo checkpoints survive map conversion', () => {
   })
   // The production route component now renders the supplied route diagram image;
   // the KMZ geometry remains covered by the route data assertions above.
-  assert.deepEqual(require(path.join(miniRoot, 'utils', 'stations.js')).map((station) => station.distance),
-    ['约 350 m', '约 870 m', '约 1.07 km'])
+  const stations = require(path.join(miniRoot, 'utils', 'stations.js'))
+  assert.deepEqual(stations.map((station) => station.distance), ['约 350 m', '约 870 m', '约 1.07 km'])
+  assert.deepEqual(stations.map((station) => station.title),
+    ['起步站：托球平衡挑战', '途中站：快乐燃动锤', '终点站：趣味翻翻乐'])
   assert.equal(route.TOTAL_DISTANCE_KM.toFixed(2), '3.50')
 })
 

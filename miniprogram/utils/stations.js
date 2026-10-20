@@ -17,7 +17,7 @@ const stations = [
   },
   {
     id: 2,
-    title: '途中站：趣味翻翻乐',
+    title: '途中站：快乐燃动锤',
     location: routeData.CHECKPOINTS[1].name,
     distance: distanceLabel(1),
     sourceMarker: '2',
@@ -26,7 +26,7 @@ const stations = [
   },
   {
     id: 3,
-    title: '终点站：快乐燃动锤',
+    title: '终点站：趣味翻翻乐',
     location: routeData.CHECKPOINTS[2].name,
     distance: distanceLabel(2),
     sourceMarker: '3',
