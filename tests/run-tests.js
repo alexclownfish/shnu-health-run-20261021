@@ -80,14 +80,13 @@ function prepareCheckpoint(type) {
   return progress
 }
 
-const completeProfile = { nickName: '测试参与者', avatarUrl: 'wxfile://avatar.jpg' }
+const completeProfile = { nickName: '测试参与者' }
 const incompleteProfiles = [
   undefined,
   {},
-  { nickName: '测试参与者' },
   { avatarUrl: 'wxfile://avatar.jpg' },
-  { nickName: ' \t ', avatarUrl: 'wxfile://avatar.jpg' },
-  { nickName: '测试参与者', avatarUrl: ' \n ' }
+  { nickName: ' \t ' },
+  { nickName: ' \n\u3000 ', avatarUrl: 'wxfile://avatar.jpg' }
 ]
 
 run('project config points to miniprogram root', () => {
@@ -500,7 +499,7 @@ run('check-in page exposes one platform-neutral QR action', () => {
   assert.match(template, /扫码打卡/)
   assert.doesNotMatch(template, /uidCanonical|tagToken|qrToken|raw UID/i)
   assert.match(template, /照片保存在当前设备/)
-  assert.match(template, /完赛昵称和起止时间提交给组织者/)
+  assert.match(template, /参与者姓名和起止时间提交给组织者/)
 })
 
 run('QR result survives the native scanner temporarily hiding the page', () => {
@@ -585,11 +584,11 @@ run('user profile storage normalizes WeChat data', () => {
   assert.equal(user.nickName, '小跑')
   assert.equal(userStore.readUser().avatarUrl, 'wxfile://avatar.png')
   assert.equal(userStore.isProfileComplete(user), true)
-  assert.equal(userStore.isProfileComplete({ nickName: '小跑', avatarUrl: '' }), false)
+  assert.equal(userStore.isProfileComplete({ nickName: '小跑', avatarUrl: '' }), true)
   for (const profile of incompleteProfiles) assert.equal(userStore.isProfileComplete(profile), false)
 })
 
-run('every available route check-in entry requires both nickname and avatar', () => {
+run('every available route check-in entry requires a participant nickname', () => {
   const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
   const entries = [
     ['start', (page) => page.openCheckin()],
@@ -636,7 +635,23 @@ run('route rejects incomplete profile saves and opens check-in after valid detai
     assert.equal(runtime.page.data.profileVisible, false)
     assert.equal(userStore.isProfileComplete(userStore.readUser()), true)
     assert.equal(runtime.app.globalData.user.nickName, completeProfile.nickName)
+    assert.equal(runtime.calls.navigation.at(-1).url, '/pages/checkin/checkin')
+    assert.equal(runtime.calls.navigation.length, 1, 'saving the name resumes the pending check-in once')
+  } finally {
+    runtime.cleanup()
+  }
+})
+
+run('scan entry accepts a manually entered nickname without avatar and resumes scanning', () => {
+  const userStore = require(path.join(miniRoot, 'utils', 'user.js'))
+  const runtime = createPageRuntime('route')
+  try {
     runtime.page.openCheckin()
+    assert.equal(runtime.page.data.profileVisible, true)
+    runtime.page.saveAuthorizedProfile({ detail: { user: { nickName: '现场手填姓名', avatarUrl: '' } } })
+    assert.equal(userStore.readUser().nickName, '现场手填姓名')
+    assert.equal(userStore.readUser().avatarUrl, '')
+    assert.equal(runtime.page.data.profileVisible, false)
     assert.equal(runtime.calls.navigation.at(-1).url, '/pages/checkin/checkin')
   } finally {
     runtime.cleanup()
@@ -756,7 +771,7 @@ run('returning to an existing route stays browsable while scanner and photo page
       const progress = prepareCheckpoint('station')
       progress.checkInStation(0, 'qr-code', { ...QR_TAGS[1], assurance: 'LOCAL_QR_MATCH', observedAt: Date.now() })
       runtime.page.onLoad({ station: '0' })
-      runtime.storage[userStore.KEY] = { nickName: completeProfile.nickName }
+      runtime.storage[userStore.KEY] = { nickName: '' }
       runtime.page.onShow()
       if (name === 'route') {
         assert.equal(runtime.page.data.profileVisible, false, 'route browsing does not force profile authorization')

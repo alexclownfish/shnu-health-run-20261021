@@ -7,7 +7,7 @@ function requireCompleteProfile(page) {
   }
   if (!page.profileRedirecting) {
     page.profileRedirecting = true
-    wx.showToast({ title: '请先填写头像和昵称', icon: 'none' })
+    wx.showToast({ title: '请先填写参与者姓名', icon: 'none' })
     wx.switchTab({
       url: '/pages/route/route',
       fail: () => { page.profileRedirecting = false }

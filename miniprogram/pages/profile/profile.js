@@ -43,7 +43,7 @@ Page({
   saveAuthorizedProfile(event) {
     const draft = event.detail && event.detail.user
     if (!userStore.isProfileComplete(draft)) {
-      wx.showToast({ title: '请填写完整头像和昵称', icon: 'none' })
+      wx.showToast({ title: '请填写参与者姓名', icon: 'none' })
       return
     }
     const user = userStore.saveUser(draft)
@@ -53,13 +53,13 @@ Page({
       userInitial: user.nickName ? user.nickName.charAt(0) : '我',
       profileVisible: false
     })
-    wx.showToast({ title: '微信资料已保存', icon: 'success' })
+    wx.showToast({ title: '姓名已保存', icon: 'success' })
   },
 
   showPrivacy() {
     wx.showModal({
       title: '隐私与照片',
-      content: '照片和头像保存在当前设备，不会上传。活动开启名单收集后，微信昵称、活动编号、完成点位及起止时间会提交给组织者用于完赛名单，只有授权管理员可导出；不用于排名。',
+      content: '照片和头像保存在当前设备，不会上传。活动开启名单收集后，参与者姓名、活动编号、完成点位及起止时间会提交给组织者用于完赛名单，只有授权管理员可导出；不用于排名。',
       showCancel: false,
       confirmText: '知道了',
       confirmColor: '#5664C2'
@@ -85,7 +85,7 @@ Page({
   showHelp() {
     wx.showModal({
       title: '打卡流程',
-      content: '先填写头像和昵称，再扫描起点开始计时，依次扫描三个任务点并拍照保存；最后扫描终点结束计时并生成凭证。',
+      content: '点击扫码后填写参与者姓名，再扫描起点开始计时，依次扫描三个任务点并拍照保存；最后扫描终点结束计时并生成凭证。',
       showCancel: false,
       confirmColor: '#5664C2'
     })

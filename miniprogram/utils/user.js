@@ -28,7 +28,9 @@ function saveUser(value) {
 
 function isProfileComplete(value) {
   const user = normalizeUser(value)
-  return Boolean(user.nickName && user.avatarUrl)
+  // Keep nickName as the stored field for the manually entered participant name.
+  // Existing local avatars remain optional display data.
+  return Boolean(user.nickName)
 }
 
 module.exports = { KEY, defaultUser, normalizeUser, readUser, saveUser, isProfileComplete }

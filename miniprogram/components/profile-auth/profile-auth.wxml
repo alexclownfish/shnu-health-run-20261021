@@ -2,18 +2,14 @@
   <view class="auth-sheet" catchtap="preventClose">
     <view class="sheet-handle"></view>
     <view class="auth-heading">
-      <view><text class="auth-title">完善微信资料</text><text class="auth-copy">填写头像和昵称后才能打卡，用于凭证及完赛名单</text></view>
+      <view><text class="auth-title">填写参与者姓名</text><text class="auth-copy">扫码打卡前填写姓名，用于完赛名单</text></view>
       <button class="later-button" bindtap="close">稍后</button>
     </view>
 
     <view class="profile-fields">
-      <button class="avatar-choice" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-        <image wx:if="{{draftAvatarUrl}}" src="{{draftAvatarUrl}}" mode="aspectFill"></image>
-        <view wx:else class="avatar-placeholder"><text>+</text><text>选头像</text></view>
-      </button>
       <view class="nickname-field">
-        <text>昵称</text>
-        <input type="nickname" value="{{draftNickName}}" placeholder="使用微信昵称" maxlength="20" bindinput="onNicknameInput" />
+        <text>姓名</text>
+        <input type="text" value="{{draftNickName}}" placeholder="请输入您的姓名" maxlength="20" bindinput="onNicknameInput" />
       </view>
     </view>
 

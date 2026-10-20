@@ -82,9 +82,9 @@ Page({
     if (!requireCompleteProfile(this)) {
       this.setData({
         state: 'PROFILE_REQUIRED',
-        statusLabel: '请先完善资料',
-        title: '填写头像和昵称后再打卡',
-        message: '请返回路线页完善微信资料。',
+        statusLabel: '请先填写姓名',
+        title: '填写姓名后再打卡',
+        message: '请返回路线页填写参与者姓名。',
         showPrimary: false,
         showRetry: false,
         showRoute: true,

@@ -118,19 +118,23 @@ Page({
   },
 
   openProfileAuthorization() {
+    this.resumeCheckinAfterProfile = false
     this.setData({ profileVisible: true })
   },
 
   closeProfileAuthorization() {
+    this.resumeCheckinAfterProfile = false
     this.setData({ profileVisible: false })
   },
 
   saveAuthorizedProfile(event) {
     const draft = event.detail && event.detail.user
     if (!userStore.isProfileComplete(draft)) {
-      wx.showToast({ title: '请填写完整头像和昵称', icon: 'none' })
+      wx.showToast({ title: '请填写参与者姓名', icon: 'none' })
       return
     }
+    const shouldResumeCheckin = this.resumeCheckinAfterProfile === true
+    this.resumeCheckinAfterProfile = false
     const user = userStore.saveUser(draft)
     getApp().globalData.user = user
     this.setData({
@@ -138,7 +142,11 @@ Page({
       userInitial: this.getUserInitial(user),
       profileVisible: false
     })
-    wx.showToast({ title: '微信资料已保存', icon: 'success' })
+    if (shouldResumeCheckin) {
+      wx.navigateTo({ url: '/pages/checkin/checkin' })
+    } else {
+      wx.showToast({ title: '姓名已保存', icon: 'success' })
+    }
   },
 
   handleStart() {
@@ -186,8 +194,8 @@ Page({
   openCheckin() {
     const user = userStore.readUser()
     if (!userStore.isProfileComplete(user)) {
+      this.resumeCheckinAfterProfile = true
       this.setData({ user, profileVisible: true })
-      wx.showToast({ title: '请先填写头像和昵称', icon: 'none' })
       return
     }
     wx.navigateTo({ url: '/pages/checkin/checkin' })

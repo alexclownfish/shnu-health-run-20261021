@@ -22,7 +22,7 @@
 
   <view class="assurance-note">
     <text class="note-title">本机验证</text>
-    <text>打卡过程与照片保存在当前设备。活动开启名单收集后，完赛昵称和起止时间提交给组织者；清除数据或更换手机无法恢复本机进度。</text>
+    <text>打卡过程与照片保存在当前设备。活动开启名单收集后，参与者姓名和起止时间提交给组织者；清除数据或更换手机无法恢复本机进度。</text>
   </view>
 
   <view wx:if="{{showPrimary || showRetry || showRoute}}" class="checkin-actions">

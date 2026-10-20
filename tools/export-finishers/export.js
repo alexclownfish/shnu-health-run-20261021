@@ -57,7 +57,7 @@ function createWorkbook(result, config, cutoff, options = {}) {
     { header: '活动编号', key: 'activityId', width: 28 },
     { header: '路线版本', key: 'routeVersion', width: 22 },
     { header: '参与者编号', key: 'participantId', width: 22 },
-    { header: '微信昵称', key: 'nickName', width: 22 },
+    { header: '参与者姓名', key: 'nickName', width: 22 },
     { header: '起点时间', key: 'startedAt', width: 24 },
     { header: '完成时间', key: 'completedAt', width: 24 },
     { header: '总用时', key: 'duration', width: 16 },
@@ -68,7 +68,7 @@ function createWorkbook(result, config, cutoff, options = {}) {
   result.rows.forEach((row, index) => sheet.addRow({
     number: index + 1,
     title: String(config.title), activityId: String(row.activityId), routeVersion: String(row.routeVersion),
-    participantId: String(row.participantId), nickName: String(row.nickName || '未填写昵称'),
+    participantId: String(row.participantId), nickName: String(row.nickName || '未填写姓名'),
     startedAt: localTime(row.startedAt, timeZone), completedAt: localTime(row.completedAt, timeZone),
     duration: duration(row.durationMs), points: row.completedPointCodes.length,
     receivedAt: localTime(row.receivedAt, timeZone)

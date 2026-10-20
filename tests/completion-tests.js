@@ -349,9 +349,8 @@ test('old certificates and incomplete task/photo evidence never enqueue', async 
   await state.client.flush()
   assert.equal(state.calls.length, 0)
 })
-test('new completion requires both a normalized nickname and avatar before queueing or cloud upload', async () => {
-  for (const user of [null, {}, { nickName: '参与者', avatarUrl: '' },
-    { nickName: '参与者', avatarUrl: ' \t ' }, { nickName: '', avatarUrl: 'avatar.jpg' },
+test('new completion requires a normalized nickname but not an avatar before queueing or cloud upload', async () => {
+  for (const user of [null, {}, { nickName: '' }, { nickName: ' \t ' },
     { nickName: ' \n\u3000 ', avatarUrl: 'avatar.jpg' }]) {
     const state = device()
     state.user = user
@@ -360,6 +359,11 @@ test('new completion requires both a normalized nickname and avatar before queue
     assert.equal(state.storage[OUTBOX_KEY], undefined)
     assert.equal(state.calls.length, 0)
   }
+  const state = device()
+  state.user = { nickName: '仅姓名', avatarUrl: '' }
+  assert.equal(state.client.enqueue(), true)
+  await state.client.flush()
+  assert.equal(state.calls[0].data.nickName, '仅姓名')
 })
 test('client normalizes and limits the frozen nickname without uploading the avatar', async () => {
   const state = device()
@@ -375,7 +379,7 @@ test('client normalizes and limits the frozen nickname without uploading the ava
   assert.deepEqual(Object.keys(state.calls[0].data).sort(), Object.keys(payload()).sort())
   assert.ok(!JSON.stringify(state.calls[0]).includes('avatar'))
 })
-test('legacy blank-name pending and invalid-payload queues wait for a complete profile, then repair only the name', async () => {
+test('legacy blank-name pending and invalid-payload queues repair only the name', async () => {
   for (const status of ['pending', 'blocked']) {
     const state = device()
     state.client.enqueue()
@@ -388,11 +392,11 @@ test('legacy blank-name pending and invalid-payload queues wait for a complete p
       entry.nextAttemptAt = NOW + 3600000
     }
     const frozen = clone(entry)
-    state.user = { nickName: '补齐的昵称', avatarUrl: '' }
+    state.user = { nickName: ' \t ', avatarUrl: '' }
     await state.client.flush()
     assert.equal(state.calls.length, 0)
     assert.deepEqual(state.storage[OUTBOX_KEY][0], frozen)
-    state.user = { nickName: '  补齐的昵称  ', avatarUrl: 'private-avatar.jpg' }
+    state.user = { nickName: '  补齐的昵称  ', avatarUrl: '' }
     state.response = async () => {
       const repaired = state.storage[OUTBOX_KEY][0]
       assert.deepEqual(repaired.target, frozen.target)
@@ -634,7 +638,7 @@ test('corrected activity exports old and new title records using the corrected d
   assert.equal(collectLocalRows([stored('another-activity', { title: previous.title }, anotherActivity)],
     anotherActivity, NOW).rows.length, 0)
 })
-test('real XLSX roundtrip keeps formulas as text, Chinese and long duration while excluding missing nicknames', async () => {
+test('real XLSX roundtrip keeps formulas as text, Chinese and long duration while excluding missing names', async () => {
   const config = activity()
   const late = START + 25 * 3600000 + 60000
   const records = [
@@ -650,7 +654,7 @@ test('real XLSX roundtrip keeps formulas as text, Chinese and long duration whil
   assert.equal(sheet.rowCount, 3)
   const nicknames = [2, 3].map((row) => sheet.getCell(`F${row}`).value)
   assert.ok(nicknames.includes('小李'))
-  assert.ok(!nicknames.includes('未填写昵称'))
+  assert.ok(!nicknames.includes('未填写姓名'))
   assert.ok(nicknames.includes('=HYPERLINK("https://example.com")'))
   for (const row of [2, 3]) assert.equal(sheet.getCell(`F${row}`).type, ExcelJS.ValueType.String)
   assert.ok([2, 3].some((row) => sheet.getCell(`I${row}`).value === '25:00:00'))

@@ -3,7 +3,7 @@
 
   <view class="profile-hero" bindtap="openProfileAuthorization">
     <view class="profile-avatar"><image wx:if="{{user.avatarUrl}}" src="{{user.avatarUrl}}" mode="aspectFill"></image><text wx:else>{{userInitial}}</text></view>
-    <view class="profile-copy"><text>{{user.nickName || '微信用户'}}</text><text class="profile-edit">{{user.nickName ? '查看或修改微信资料' : '点击授权微信头像和昵称'}}</text><text class="route-status">本次路线 {{completed}} / 3 点位</text></view>
+    <view class="profile-copy"><text>{{user.nickName || '尚未填写姓名'}}</text><text class="profile-edit">{{user.nickName ? '查看或修改参与者姓名' : '点击填写参与者姓名'}}</text><text class="route-status">本次路线 {{completed}} / 3 点位</text></view>
     <text class="chevron">›</text>
   </view>
 
